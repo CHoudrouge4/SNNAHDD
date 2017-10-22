@@ -3,10 +3,13 @@
 #include <fstream>
 #include <algorithm>
 
+//std::vector<point> kd_tree::points = std::vector<point>();
+
 kd_tree::kd_tree(const std::string file_name) {
 	read_point(file_name);
 	for(size_t i = 0; i < points.size(); ++i) {
 			(root->pts).push_back(i);
+			std::cout << (root->pts)[i] << '\n';		
 	}
 	if(points.size() > 0) dimension = points[0].size();
 	construct(root, 0);
