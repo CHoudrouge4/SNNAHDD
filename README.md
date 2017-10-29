@@ -8,7 +8,7 @@ A detailed description of these Data Structures is presented in [This paper](htt
 ## Step Zero
 This step is implementing **The k-d Tree**.
 
-###Current Status:
+### Current Status:
 	* Constructing The Tree: **done**
 	* Querying  The tree: **done**
 	* Allowing The user to specify the distance function.
