@@ -31,16 +31,14 @@ void kd_tree::construct(std::shared_ptr<node> &current, int index) {
 	if(n <= 1) return;
 	// get thr point of the current node
 	std::vector<double> v(n);
-	for(int i = 0; i < n; ++i) {
-		v[i] = points[current->pts[i]][index];
-	}
-
+	for(int i = 0; i < n; ++i) v[i] = points[current->pts[i]][index];
+	
 	// compute the median of the current node
 	double med = median(v) - epsilon;
 	current->median = med;
 	current->index  = index;	
 	// create a left and right child
-	std::cout << med << " "  << v << std::endl; 
+//	std::cout << med << " "  << v << std::endl; 
 	current->left   = std::make_shared<node>();
 	current->right  = std::make_shared<node>();
 	std::shared_ptr<node> l = current->left;
@@ -49,10 +47,10 @@ void kd_tree::construct(std::shared_ptr<node> &current, int index) {
 	r->parent = current;
 	for(int i = 0; i < n; i++) {	
 		if(points[(current->pts)[i]][index] <= med) {	
-			std::cout << points[(current->pts)[i]] << std::endl; 
+	//		std::cout << points[(current->pts)[i]] << std::endl; 
 			l->pts.push_back((current->pts)[i]);
 		} else {
-			std::cout << points[(current->pts)[i]] << std::endl; 
+	//		std::cout << points[(current->pts)[i]] << std::endl; 
 			r->pts.push_back((current->pts)[i]);
 		}
 	}
@@ -123,7 +121,7 @@ void kd_tree::read_point(const std::string file_name) {
 		points.push_back(e);
 	}
 
-	std::cout << "set size: " << s.size() << " " << "points size " << points.size() << std::endl;
+//	std::cout << "set size: " << s.size() << " " << "points size " << points.size() << std::endl;
 	in.close();
 }
 
@@ -184,15 +182,20 @@ std::string kd_tree::print(std::shared_ptr<node> &root) {
 	return o.str();
 }
 
-point kd_tree::get_point(const int i) {
+point kd_tree::get_point(const int i) const {
 	if(i >= 0 && i < points.size()) return points[i];
 	throw std::invalid_argument("Index is not in range!!\n");
 }
 
-std::vector<point> kd_tree::get_points(const std::vector<int> &v) {
+std::vector<point> kd_tree::get_points(const std::vector<int> &v) const {
 	std::vector<point> result;
 	for(auto&& e: v) {
 		result.push_back(get_point(e));
 	}
 	return result;
-} 
+}
+
+std::vector<point> kd_tree::get_points() const { return points; } 
+
+size_t kd_tree::size() const { return points.size(); }
+int    kd_tree::get_dimension() const { return dimension; }

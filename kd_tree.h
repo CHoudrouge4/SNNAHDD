@@ -108,11 +108,29 @@ public:
  	* this function takes an index and return 
  	* its corresponding point.
  	*/
-	point get_point(const int i);
+	point get_point(const int i) const;
 
 	/**
  	* this funtion take a set of indeces and return
  	* their corresponding points.
  	*/
-	std::vector<point> get_points(const std::vector<int> &v);
+	std::vector<point> get_points(const std::vector<int> &v) const;
+
+	/**
+ 	* this functions return the data stored
+ 	* in points
+ 	*/
+	std::vector<point> get_points() const;
+	
+	/*
+ 	* This function returns the number of the points 
+ 	* in the tree
+	*/
+	size_t size() const;
+
+	/*
+ 	* This function return the dimension of the points 
+ 	* stored
+ 	*/
+	int get_dimension() const;
 };
