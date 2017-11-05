@@ -7,43 +7,50 @@
 #include <random>
 #include <limits>
 #include <chrono>
+#include <sstream>
+#define RANGE 100000
 
-std::vector<point> generate_data() {
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dis(-1000, 1000);
+static std::random_device rd;
+static std::mt19937 gen(rd());
 
-	std::ofstream out("data.txt");
+point generate_point(const int dim) {
+	static std::uniform_int_distribution<> dis(-RANGE, RANGE);
+	point p(dim);
+	for(int j = 0; j < dim; ++j) p[j] = dis(gen);
+	return p;
+}
 
-	int num = std::abs(dis(gen));
-	out << num << ' ' << 4 << '\n';
-	for(int i = 0; i < num; i++) {
-		int x = dis(gen);
-		int y = dis(gen);
-		int z = dis(gen);
-		int a = dis(gen);
-		out << x << ' ' << y << ' ' << z << ' ' << a << '\n';
+std::string point_to_string(const point p) {
+	std::ostringstream o;
+	for(int i = 0; i < p.size() - 1; ++i)
+		o << p[i] << ' ';
+	o << p[p.size() - 1];
+	return o.str();
+}
+
+std::vector<point> generate_query(const int size, const int dim) {	
+	std::ofstream out("query.txt");
+	std::uniform_int_distribution<> d(1, size);
+	int qsize = d(gen);
+	std::vector<point> Q(qsize);
+	out << qsize << '\n';
+	for(size_t i = 0; i < Q.size(); ++i) {
+		Q[i] = generate_point(dim);
+		out << point_to_string(Q[i]) << '\n';
 	}
 	out.close();
-
-	std::ofstream q("query.txt");
-	std::uniform_int_distribution<> d(0, num);
-	int size = d(gen);
-	std::cout << size << std::endl;
-	q << size << '\n';
-	std::vector<point> Q(size);
-	for(size_t i = 0; i < Q.size(); ++i) {
-		int x = dis(gen);
-		int y = dis(gen);
-		int z = dis(gen);
-		int a = dis(gen);
-		q <<  x << ' ' << y << ' ' << z << ' ' << a << '\n';
-		Q[i] = {(double) x, (double)y, (double)z};
-	}	
-	q.close();
 	return Q;
 }
 
+void generate_data(const int size, const int dim) {
+	std::ofstream out("data.txt");
+	out << size << ' ' << dim << '\n';
+	for(int i = 0; i < size; i++) {
+		point p = generate_point(dim);
+		out << point_to_string(p) << '\n';
+	}
+	out.close();
+}
 
 double dist(const point p, const point q) {
 	// need to add sqrt.
@@ -53,8 +60,6 @@ double dist(const point p, const point q) {
 	}
 	return result;
 }
-
-
 
 std::vector<int> naive(const std::vector<point> &pts, std::vector<point> &query) {
 	std::vector<int> res(query.size());
@@ -76,18 +81,22 @@ std::vector<int> naive(const std::vector<point> &pts, std::vector<point> &query)
 }
 
 int main() {
+//	int num = std::abs(dis(gen));
 
 	std::ofstream in1("kd_result.txt" , std::ios_base::app);
 	std::ofstream in2("naive.txt"	  , std::ios_base::app);
 	std::ofstream in3("const_time.txt", std::ios_base::app);
-
-	std::vector<point> query = generate_data();
+	
+	std::uniform_int_distribution<> dis(1000, 10000);
+	int size = 1000; //dis(gen);
+	int dim  = dis(gen);
+	generate_data(size, dim);
+	std::vector<point> query = generate_query(size, dim);
 	
 	auto start = std::chrono::system_clock::now();
 	kd_tree k("data.txt");
 	auto end   = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_time = end - start;
-
 	in3 << k.size() << ' ' << k.get_dimension() << ' ' << elapsed_time.count() << '\n';
 
 	start = std::chrono::system_clock::now();
@@ -96,10 +105,10 @@ int main() {
 	elapsed_time = end - start;
 	in1 << query.size() <<  ' ' << k.get_dimension() << ' ' << elapsed_time.count() << '\n';
 		
-   	const std::vector<point> p = k.get_points();
+   	const std::vector<point> pts = k.get_points();
 
 	start = std::chrono::system_clock::now();
-	std::vector<int> result_naive = naive(p, query);
+	std::vector<int> result_naive = naive(pts, query);
 	end   = std::chrono::system_clock::now();
 	elapsed_time = end - start;
 	in2 << query.size() << ' ' <<  k.get_dimension() <<' ' << elapsed_time.count() << '\n';
@@ -108,7 +117,12 @@ int main() {
 		if(result[i] == result_naive[i])
 			std::cout << result[i] << " == " << result_naive[i] <<  " [OK] " << '\n';
 		else
-			std::cout << "[FAILED]\n" << '\n';
+			std::cout << "[FAILED]" << '\n'
+					  << "ANALYSIS:" << '\n'
+					  << "Query: "    << i << ' ' << result[i] << " != " << result_naive[i] << '\n'
+					  << "distance:" << '\n'
+					  << "d(query[" << i << "]," << " result[" << i << "]) = " << dist(query[i], pts[result[i]])
+					  << " d(query[" << i << "]," << " result_naive[" << i << "]) = " << dist(query[i], pts[result_naive[i]]) << '\n';
 	}
 	
 	in1.close();

@@ -8,12 +8,17 @@ A detailed description of these Data Structures is presented in [This paper](htt
 ## Step Zero
 This step is implementing **The k-d Tree**.
 
-### Current Status:
+1. Current Status:
 	* Constructing The Tree: **done**
 	* Querying  The tree: **done**
 	* Allowing The user to specify the distance function.
+2. Testing:
+	we started testing our algorithm by comparing it to the naive algorithm in order to show its correctness and to compare its efficiency.The testing is done over a random set of points with different dimensionality chosen from a uniform distribution.In addition, we computed the construction time for the tree with respect to the number of points and to space's dimension. (for more details check main.cpp)
+	Graph for some results:
+	![Construction Time with respect to the dimensionaluty.]{./images/const_dim.png}
 
-## Step One
+
+##Step One
 This step is implementing **The Randomized k-d Tree**
 
 
