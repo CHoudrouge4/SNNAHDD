@@ -30,11 +30,13 @@ n_axis = []
 k_axis = []
 for i in range(0, len(k_result)):
     kl = k_result[i].split()
-    if kl[1] == '2':
+    if float(kl[1]) > 1000 and float(kl[1]) < 100000:
         nl = naive_result[i].split()
         x_axis.append(kl[0])
         n_axis.append(nl[2])
         k_axis.append(kl[2])
 
 plt.plot(x_axis, n_axis, 'ro', x_axis, k_axis, 'go')
+plt.ylabel('time')
+plt.xlabel('number of points')
 plt.show()

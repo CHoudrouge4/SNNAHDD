@@ -14,15 +14,26 @@ This step is implementing **The k-d Tree**.
 	* Allowing The user to specify the distance function.
 2. Testing:
 	we started testing our algorithm by comparing it to the naive algorithm in order to show its correctness and to compare its efficiency.The testing is done over a random set of points with different dimensionality chosen from a uniform distribution.In addition, we computed the construction time for the tree with respect to the number of points and to space's dimension. (for more details check main.cpp)
+
 Graph for some results:
 Construction time(in seconds) with respect to the dimensionality:
 ![Construction time with respect to the dimensionality](./imges/const_dim.png)
 Construction time(in seconds) with respect to the number of points with fixed dimension equls to two:
 ![](./imges/const-pts.png)
 
+Camparaision between kd-tree search algorithm (in green) and the naive algorithm (in red).
+For dimensions between 1 and 100.(time in seconds/number of points)
+![](./1100.png)
+
+For dimensions between 100 and 1000.(time in seconds/number of points)
+![](./1001000.png)
+
+For dimensions between 1000 and 10000.(time in seconds/number of points)
+![](./100010000.png)
 
 
-##Step One
+
+## Step One
 This step is implementing **The Randomized k-d Tree**
 
 
