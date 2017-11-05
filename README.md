@@ -23,13 +23,13 @@ Construction time(in seconds) with respect to the number of points with fixed di
 
 Camparaision between kd-tree search algorithm (in green) and the naive algorithm (in red).
 For dimensions between 1 and 100.(time in seconds/number of points)
-![](./1100.png)
+![](./imges/1100.png)
 
 For dimensions between 100 and 1000.(time in seconds/number of points)
-![](./1001000.png)
+![](./imges/1001000.png)
 
 For dimensions between 1000 and 10000.(time in seconds/number of points)
-![](./100010000.png)
+![](./imges/100010000.png)
 
 
 
