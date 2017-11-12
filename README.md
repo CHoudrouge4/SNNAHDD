@@ -28,8 +28,13 @@ For dimension equals to 2 and number of points ranges between 10 and 100000.(tim
 For dimension equals to 3 and number of points ranges between 10 and 10000.(time in seconds/number of points)
 ![](./imges/10000_3.png)
 
-For dimensions between 1000 and 10000.(time in seconds/number of points)
-![](./imges/100010000.png)
+For dimension equals to 15 and number of points equals 10000.(time in seconds/number of points)
+![](./imges/10000_15.png)
+
+For dimension equals to 15 and number of points equals 100000.(time in seconds/number of points)
+![](./imges/100000_15.png)
+
+
 
 
 
