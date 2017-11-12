@@ -21,6 +21,8 @@ Construction time(in seconds) with respect to the dimensionality:
 Construction time(in seconds) with respect to the number of points with fixed dimension equls to two:
 ![](./imges/const-pts.png)
 
+Comment on the results: k-d tree performs very well in low dimensions. This result is obvious from the first and the second graph. However, the performance of the k-d tree decreases drastically when the dimension is high. The third and the fourth graph demonstrate this fact. This will lead us to start implementing step one and two to get a better performance in higher dimensions.  
+
 Camparaision between kd-tree search algorithm (in green) and the naive algorithm (in red).
 For dimension equals to 2 and number of points ranges between 10 and 100000.(time in seconds/number of points)
 ![](./imges/100000_2.png)
