@@ -8,7 +8,7 @@
 #include <limits>
 #include <chrono>
 #include <sstream>
-#define RANGE 100000
+#define RANGE 20
 
 static std::random_device rd;
 static std::mt19937 gen(rd());
@@ -31,7 +31,7 @@ std::string point_to_string(const point p) {
 std::vector<point> generate_query(const int size, const int dim) {	
 	std::ofstream out("query.txt");
 	std::uniform_int_distribution<> d(1, size);
-	int qsize = d(gen);
+	int qsize = size;//d(gen);
 	std::vector<point> Q(qsize);
 	out << qsize << '\n';
 	for(size_t i = 0; i < Q.size(); ++i) {
@@ -88,30 +88,39 @@ int main() {
 	std::ofstream in3("const_time.txt", std::ios_base::app);
 	
 	std::uniform_int_distribution<> dis(1000, 10000);
-	int size = 1000; //dis(gen);
-	int dim  = dis(gen);
+	int size; //dis(gen);
+	int dim = 15;
+//	std::cin >> size >> dim;
+	for(size = 0; size < 100000; size += 100) {
 	generate_data(size, dim);
-	std::vector<point> query = generate_query(size, dim);
-	
+	std::vector<point> query = generate_query(100, dim);
+	//std::vector<point> query = {{4, 2}};	
+		
 	auto start = std::chrono::system_clock::now();
 	kd_tree k("data.txt");
 	auto end   = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_time = end - start;
 	in3 << k.size() << ' ' << k.get_dimension() << ' ' << elapsed_time.count() << '\n';
 
+//	std::cout << k << '\n';
+
 	start = std::chrono::system_clock::now();
 	std::vector<int> result = k.search(query);
 	end   = std::chrono::system_clock::now();
 	elapsed_time = end - start;
-	in1 << query.size() <<  ' ' << k.get_dimension() << ' ' << elapsed_time.count() << '\n';
-		
+	in1 << k.size() << ' ' << query.size() <<  ' ' << k.get_dimension() << ' ' << elapsed_time.count() << '\n';
+	
+	std::cout << "Done kd search" << std::endl;
+
    	const std::vector<point> pts = k.get_points();
 
 	start = std::chrono::system_clock::now();
 	std::vector<int> result_naive = naive(pts, query);
 	end   = std::chrono::system_clock::now();
 	elapsed_time = end - start;
-	in2 << query.size() << ' ' <<  k.get_dimension() <<' ' << elapsed_time.count() << '\n';
+	in2 << k.size() << ' ' <<  query.size() << ' ' <<  k.get_dimension() <<' ' << elapsed_time.count() << '\n';
+	
+	std::cout << "Done naive search" << std::endl;
 
 	for(size_t i = 0; i < result.size(); ++i) {
 		if(result[i] == result_naive[i])
@@ -124,7 +133,7 @@ int main() {
 					  << "d(query[" << i << "]," << " result[" << i << "]) = " << dist(query[i], pts[result[i]])
 					  << " d(query[" << i << "]," << " result_naive[" << i << "]) = " << dist(query[i], pts[result_naive[i]]) << '\n';
 	}
-	
+	}
 	in1.close();
 	in2.close();
 	in3.close();

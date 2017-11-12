@@ -85,7 +85,7 @@ private:
  	* this function search for the nearest points arround q.
  	*
  	*/
-	void search(std::shared_ptr<node> &current, const point &q, double &R, int &res);
+	void search(std::shared_ptr<node> &current, const point &q, double &R, int &res, double &pmed);
 
 	std::string print();
 	std::string print(std::shared_ptr<node> &current);

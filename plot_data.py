@@ -6,7 +6,7 @@ def read_data(fileName):
     content = [x.strip() for x in content]
     return content
 
-l = read_data('2 - const_time.txt')
+l = read_data('const_time.txt')
 
 x  = []
 y  = []
@@ -30,11 +30,11 @@ n_axis = []
 k_axis = []
 for i in range(0, len(k_result)):
     kl = k_result[i].split()
-    if float(kl[1]) > 1000 and float(kl[1]) < 100000:
-        nl = naive_result[i].split()
-        x_axis.append(kl[0])
-        n_axis.append(nl[2])
-        k_axis.append(kl[2])
+#    if float(kl[1]) > 1000 and float(kl[1]) < 100000:
+    nl = naive_result[i].split()
+    x_axis.append(float(kl[0]))
+    n_axis.append(float(nl[3]))
+    k_axis.append(float(kl[3]))
 
 plt.plot(x_axis, n_axis, 'ro', x_axis, k_axis, 'go')
 plt.ylabel('time')

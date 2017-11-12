@@ -9,6 +9,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <set>
+#include <random>
 
 kd_tree::kd_tree(const std::string file_name) {
 	read_point(file_name);
@@ -32,13 +33,14 @@ void kd_tree::construct(std::shared_ptr<node> &current, int index) {
 	// get thr point of the current node
 	std::vector<double> v(n);
 	for(int i = 0; i < n; ++i) v[i] = points[current->pts[i]][index];
-	
+
 	// compute the median of the current node
-	double med = median(v) - epsilon;
+	
+	double med = median(v);
 	current->median = med;
-	current->index  = index;	
+	current->index  = index;
 	// create a left and right child
-//	std::cout << med << " "  << v << std::endl; 
+	//std::cout << med << "\n";// << v << std::endl; 
 	current->left   = std::make_shared<node>();
 	current->right  = std::make_shared<node>();
 	std::shared_ptr<node> l = current->left;
@@ -46,12 +48,11 @@ void kd_tree::construct(std::shared_ptr<node> &current, int index) {
 	l->parent = current;
 	r->parent = current;
 	for(int i = 0; i < n; i++) {	
-		if(points[(current->pts)[i]][index] <= med) {	
-	//		std::cout << points[(current->pts)[i]] << std::endl; 
-			l->pts.push_back((current->pts)[i]);
+//		std::cout << v << std::endl;
+		if(points[current->pts[i]][index] <= med) {	
+			l->pts.push_back(current->pts[i]);
 		} else {
-	//		std::cout << points[(current->pts)[i]] << std::endl; 
-			r->pts.push_back((current->pts)[i]);
+			r->pts.push_back(current->pts[i]);
 		}
 	}
 	index = (index + 1) % dimension;
@@ -63,19 +64,25 @@ std::vector<int> kd_tree::search(std::vector<point> &query) {
 	std::vector<int> result(query.size());
 	int i = 0;
 	for(auto&& q: query) {
+		double pmed = 0;
 		double R = std::numeric_limits<double>::max();
-		search(root, q, R, result[i]);
+		search(root, q, R, result[i], pmed);
 		i++;
 	}	
 	return result;
 }
 // need revision and improvement + testing 
-void kd_tree::search(std::shared_ptr<node> &current, const point &q, double &R, int &res) {
-	if(current->left == nullptr && current->right == nullptr) {		
+void kd_tree::search(std::shared_ptr<node> &current, const point &q, double &R, int &res, double &pmed) {
+	if(current == nullptr) return;
+	if(current->left == nullptr && current->right == nullptr && current->pts.size() != 0) {		
 		double d = dist(points[current->pts[0]], q);  //compure the distance between p and q where p is the only node in the leaf node
+//		double d = 0;
+	//	std::cout << "leaf is equal to: " << current->pts << std::endl;
 		if(d < R) {
 			R = d;
 			res = current->pts[0]; 
+			pmed = current->parent->median;
+		//	std::cout << "pmed = " << pmed << std::endl;
 		}	
 	} else {
 		double med = current->median;
@@ -83,27 +90,35 @@ void kd_tree::search(std::shared_ptr<node> &current, const point &q, double &R, 
 		bool exp;
 		if(q[index] <= med) {
 			exp = true;
-			search(current->left,  q, R, res);
+			search(current->left,  q, R, res, pmed);
 		} else {
 			exp = false;
-			search(current->right, q, R, res);
+			search(current->right, q, R, res, pmed);
 		}
-		for(auto&& p: current->pts) {
-		//	std::cout << p << '\n';
-			if(exp && points[p][index] > med && dist(q, points[p]) <= R) {
-				search(current->right, q, R, res);
-				break;
-			} 
 
-			if(!exp && points[p][index] <= med && dist(q, points[p]) <= R) {
-				search(current->left, q, R, res);
-				break;
+		point plane = q;
+		plane[index] = med;
+		double r = dist(plane, q); 
+		//std::cout << "for : " << med << " r is equal to " << r << std::endl;
+		if(r < R){//&& med == pmed) {	
+				for(auto&& p: current->pts) {
+				if(exp && points[p][index] > med && dist(q, points[p]) <= R) {
+		//			std::cout << "right" << std::endl;
+					search(current->right, q, R, res, pmed);
+					break;
+				} 
+				if(!exp && points[p][index] <= med && dist(q, points[p]) <= R) { 
+		//			std::cout << "left" << std::endl;
+					search(current->left, q, R, res, pmed);
+					break;
+				}
 			}
-		}
+		}	
 	}
 }
 
 void kd_tree::read_point(const std::string file_name) {
+	srand(static_cast<unsigned> (time(0)));
 	std::ifstream in(file_name);
 	int n, m; in >> n >> m;
 	double t; 
@@ -112,8 +127,11 @@ void kd_tree::read_point(const std::string file_name) {
 		point p;
 		for(int j = 0; j < m; ++j) {
 			in >> t;
+			double e = static_cast<double> (rand()) / static_cast<float>(RAND_MAX);
+			t += e;
 			p.push_back(t);		
 		}
+//		points.push_back(p);
 		s.insert(p);
 	}
 	
@@ -134,16 +152,16 @@ double kd_tree::dist(const point p, const point q) {
 	return result;
 }
 
-double kd_tree::median(std::vector<double> &v) {	
+double kd_tree::median(std::vector<double> &v) {
 	std::sort(v.begin(), v.end());
 	if(v.size() % 2 == 0)
 		return (v[v.size()/2] + v[v.size()/2 - 1])/2.0;
 	else 
-		return v[v.size()/2];	
+		return v[v.size()/2];
 }
 
 std::string kd_tree::print() {
-	return print(root);	
+	return print(root);
 }
 
 std::string kd_tree::print(std::shared_ptr<node> &root) {
