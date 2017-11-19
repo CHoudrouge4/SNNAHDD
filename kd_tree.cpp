@@ -143,7 +143,7 @@ void kd_tree::read_point(const std::string file_name) {
 	in.close();
 }
 
-double kd_tree::dist(const point p, const point q) {
+double kd_tree::dist(const point &p, const point &q) {
 	// need to add sqrt.
 	double result = 0.0;
 	for(size_t i = 0; i < p.size(); ++i) {

@@ -8,7 +8,7 @@
 #include <limits>
 #include <chrono>
 #include <sstream>
-#define RANGE 20
+#define RANGE 10000
 
 static std::random_device rd;
 static std::mt19937 gen(rd());
@@ -52,7 +52,7 @@ void generate_data(const int size, const int dim) {
 	out.close();
 }
 
-double dist(const point p, const point q) {
+double dist(const point &p, const point &q) {
 	// need to add sqrt.
 	double result = 0.0;
 	for(size_t i = 0; i < p.size(); ++i) {
@@ -91,7 +91,7 @@ int main() {
 	int size; //dis(gen);
 	int dim = 15;
 //	std::cin >> size >> dim;
-	for(size = 0; size < 100000; size += 100) {
+	for(size = 0; size < 10000; size += 100) {
 	generate_data(size, dim);
 	std::vector<point> query = generate_query(100, dim);
 	//std::vector<point> query = {{4, 2}};	

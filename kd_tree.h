@@ -2,48 +2,15 @@
 #include <fstream>
 #include <vector>
 #include <memory>
-
+#include "node.h"
 /**
  * TODO: overide << yes (I need to improve it). 
- * Testing. 50%
+ * Testing. 95%
  * add aditional constructors.
  * Make the code modular concerning the cluctiring algorithm, not yet
  * and the distance algorithm.	not yet
  * change the way of getting the result. almost done
  * */
-
-typedef std::vector<double> point; 
-template <class T>
-std::ostream& operator<<(std::ostream& out, const std::vector<T>& v) {
-	if(v.size() == 0) {
-		out << "()";
-		return out;
-	} else  {
-		out << '(';
-		out << ' ' << v[0] ;
-		for(size_t i = 1; i < v.size(); ++i)
-			out << " , " << v[i];
-		out << ')';
-	return out;
-	}
-}
-
-struct node {
-	double r; 
-	double median;
-	int index; // the index that we computed the median with respect to it.
-	std::vector<int> pts;
-	std::shared_ptr<node> left;   // pointer to the left child
-	std::shared_ptr<node> right;  // pointer to the right child
-	std::shared_ptr<node> parent; // pointer to the parent
-	friend std::ostream &operator<<(std::ostream &out, node& n) {
-		out << "NODE"
-			<< " M: " <<  n.median
-			<< " i: " <<  n.index
-		    << ' '    <<  n.pts;
-		return out;
-	}
-};
 
 
 class kd_tree {	
@@ -58,11 +25,13 @@ private:
 	std::shared_ptr<node> root = std::make_shared<node>();
 	std::vector<point> points; // stors all the points in the space
 
+	
+	kd_tree() {}
 	/**
  	* this function computes the square of the ecludian distance
  	* between point p and q 
  	*/
-	double dist(const point p, const point q);
+	double dist(const point &p, const point &q);
 
 	/**
 	* this function computes the median 
@@ -91,13 +60,15 @@ private:
 	std::string print(std::shared_ptr<node> &current);
 
 public:
-	kd_tree() {}
 	/**
  	* A constructor 
  	* it takes a file name that contains a set of points and creat 
  	* a kd-tree.
  	*/
 	kd_tree(const std::string file_name);
+	
+	kd_tree(const std::string file_name, double (*)(point &a, point &b));
+
 	/**
 	* @param: query is a vector of point that we want to search for 
 	* their nearest neighbor.

@@ -43,8 +43,14 @@ For dimension equals to 15 and number of points equals 100000.(time in seconds/n
 ## Step One
 This step is implementing **The Randomized k-d Tree**
 
+1. Current Status:
+	* Constructing The Tree: **Started**
+	* Querying  The tree: 
 
 ## Step Two
 This Step is implementing **The Priority Search K-Means Tree**
+
+## Step Three
+TBA.
 
 

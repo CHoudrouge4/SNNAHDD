@@ -9,9 +9,9 @@ REMOVE  = client  *.o
 
 $(OUTPUT): $(OBJECTS)
 	$(CC) $(CFLAGS) $(VERSION) $(OBJECTS) -o $(OUTPUT) 
-main.o: main.cpp kd_tree.cpp kd_tree.h
+main.o: main.cpp kd_tree.cpp kd_tree.h node.h
 	$(CC) $(VERSION) $(C) $(CFLAGS) main.cpp 
-kd_tree.o: kd_tree.h
+kd_tree.o: kd_tree.h node.h
 	$(CC) $(VERSION) $(C) $(CFLAGS) kd_tree.cpp
 .PHONY: clean
 clean:
