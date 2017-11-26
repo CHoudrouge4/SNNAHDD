@@ -54,10 +54,10 @@ This step is implementing **The Randomized k-d Tree**
 
 Graphs for some results:
 Construction time(in seconds) for 20 trees with respect to the number of points(with dimension equals to 25).
-![](./images/rconst10000_25_20.png)
+![](./imges/rconst10000_25_20.png)
 
 Construction time(in seconds) for 20 trees with respect to the dimension (with 1000 points for each dimension).
-![](./images/dim1000.png)
+![](./imges/dim1000.png)
 
 ## Step Two
 This Step is implementing **The Priority Search K-Means Tree**
