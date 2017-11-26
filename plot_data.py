@@ -6,19 +6,19 @@ def read_data(fileName):
     content = [x.strip() for x in content]
     return content
 
-l = read_data('const_time.txt')
+l = read_data('rconst_time.txt')
 
 x  = []
 y  = []
 for e in l:
     ll =  e.split()
-    x.append(ll[0])
+    x.append(ll[1])
     y.append(ll[2]);
 #    print ll[0] + ' ' + ll[2]
 
 plt.plot(x, y, 'bo')
 plt.ylabel('time');
-plt.xlabel('number of points')
+plt.xlabel('Dimension (using 1000 points)')
 plt.show()
 
 

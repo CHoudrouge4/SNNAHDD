@@ -10,15 +10,34 @@
 #include <stdexcept>
 #include <set>
 #include <random>
+#include <memory>
+#include "node.h"
+#include <cmath>
+#include <functional>
 
-int rkd_tree::ND = 0;
+int rkd_tree::ND = 5;
 std::random_device rkd_tree::rd;
 std::mt19937 rkd_tree::gen(rd());
 std::uniform_int_distribution<> rkd_tree::dis(0, rkd_tree::ND);
 
-
 rkd_tree::rkd_tree(const std::string file_name) {
-	ND = 5;
+	read_point(file_name);
+	roots = std::vector<std::shared_ptr<node>>(20);
+	for(size_t i = 0; i < roots.size(); ++i) {
+
+		roots[i] = std::make_shared<node>();
+		for(size_t j = 0; j < points.size(); ++j)
+		 	(roots[i]->pts).push_back(j);
+
+		if(points.size() > 0) dimension = points[0].size();
+	
+		std::cout << "start constructing root " << i << '\n';
+		int index = split_dimension(roots[i]);
+		roots[i]->index = index;
+		construct(roots[i], index);
+		std::cout << "done constructiing root " << i << '\n';
+	}
+	limit = 2; //ceil(0.05 * points.size());
 }
 
 void rkd_tree::read_point(const std::string file_name) {
@@ -35,14 +54,8 @@ void rkd_tree::read_point(const std::string file_name) {
 			t += e;
 			p.push_back(t);		
 		}
-		s.insert(p);
+		points.push_back(p);
 	}
-	
-	for(auto&& e : s) {
-		points.push_back(e);
-	}
-
-	in.close();
 }
 
 double rkd_tree::dist(const point &p, const point &q) {
@@ -60,10 +73,6 @@ double rkd_tree::median(std::vector<double> &v) {
 		return (v[v.size()/2] + v[v.size()/2 - 1])/2.0;
 	else 
 		return v[v.size()/2];
-}
-
-std::string rkd_tree::print() {
-	return std::string(); //print(root);
 }
 
 double rkd_tree::mean(const point &p) {
@@ -111,8 +120,6 @@ void rkd_tree::construct(std::shared_ptr<node> &current, int index) {
 			r->pts.push_back(current->pts[i]);
 		}
 	}
-
-
 	//change here 
 	if(dimension < 5)
 		index = (index + 1) % dimension;
@@ -135,6 +142,15 @@ int rkd_tree::split_dimension(std::shared_ptr<node> &current) {
 	std::sort(vars.rbegin(), vars.rend());
 	int i = dis(gen);
 	return vars[i].second;
+}
+
+std::string rkd_tree::print() {
+	std::ostringstream o;
+	for(int i = 0; i < roots.size(); ++i) {
+		o << "\n rkd_tree nb " << i << '\n';
+		o << print(roots[i]);
+	}
+	return o.str();
 }
 
 std::string rkd_tree::print(std::shared_ptr<node> &root) {
@@ -185,3 +201,78 @@ std::vector<point> rkd_tree::get_points(const std::vector<int> &v) const {
 	return result;
 }
 
+size_t rkd_tree::size() { return points.size(); }
+int rkd_tree::get_dimension() const { return dimension; }
+
+std::vector<int> rkd_tree::search(const std::vector<point> &query) {
+	std::vector<int> results(query.size());
+	for(size_t i = 0; i < query.size(); ++i)
+		results[i] = search(query[i]);
+	return results;
+}
+
+int rkd_tree::search(const point &q) {
+	std::set<std::pair<double, int>> pq;
+	std::vector<bool> explored(points.size(), false);
+	std::vector<std::thread> ths(roots.size());
+	std::vector<int> res(roots.size());
+	for(size_t i = 0; i < roots.size(); ++i) {
+		int count = 0;
+		double R = std::numeric_limits<double>::max(); 
+		double pmed = roots[i]->median;
+		ths[i] = std::thread(&rkd_tree::explore, this, std::ref(roots[i]), std::ref(q), std::ref(R), std::ref(res[i]), pmed, std::ref(count), std::ref(pq), std::ref(explored));
+		//explore(roots[i], q, R, res[i], pmed, count, pq, explored);
+	}
+
+	for(size_t i = 0; i < roots.size(); ++i) ths[i].join();
+	return (*pq.begin()).second;
+}
+
+void rkd_tree::explore(std::shared_ptr<node> &current, const point &q, double &R, int &res, double pmed, 											int &count, std::set<std::pair<double, int>> &pq, std::vector<bool> &explored) {
+
+	if(count >= limit) return;
+	if(current == nullptr) return;
+	if(current->left == nullptr && current->right == nullptr && current->pts.size() != 0) {
+		double d = dist(points[current->pts[0]], q);  //compure the distance between p and q where p is the only node in the leaf node
+		if(d < R) {
+			R = d;
+			res = current->pts[0];
+			pmed = current->parent->median;
+			explored[res] = true;
+			count++;
+			mx.lock();
+			pq.insert({d, res});
+			mx.unlock();
+		}
+	} else {
+		double med = current->median;
+		int index  = current->index;
+		bool exp;
+		if(q[index] <= med) {
+			exp = true;
+			explore(current->left,  q, R, res, pmed, count, pq, explored);
+		} else {
+			exp = false;
+			explore(current->right, q, R, res, pmed, count, pq, explored);
+		}
+		
+		if(count >= limit) return;
+		point plane = q;
+		plane[index] = med;
+		double r = dist(plane, q); 
+		if(r < R) {	
+			for(auto&& p: current->pts) {
+				if(!explored[p]) {
+					if(exp) {
+						explore(current->right, q, R, res, pmed, count, pq, explored);
+					}
+					if(!exp) { 
+						explore(current->left, q, R, res, pmed, count, pq, explored);
+					}
+				}
+			}
+		}
+	}
+}
+
+std::vector<point> rkd_tree::get_points() const { return points; } 
