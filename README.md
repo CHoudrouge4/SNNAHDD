@@ -73,7 +73,7 @@ Search time(in seconds) for 25 trees with respect to the number ofpoints(with di
 ![](./imges/1000_25_77_17.png)
 
 Search time(in seconds) for 30 trees with respect to the number ofpoints(with dimension equals to 10). The search precision is equal to 80.44%.
-![](./imges/1000_30_88_44.png)
+![](./imges/1000_30_80_44.png)
 
 Search time(in seconds) for 35 trees with respect to the number ofpoints(with dimension equals to 10). The search precision is equal to 84%.
 ![](./imges/1000_35_84_00.png)
