@@ -43,7 +43,7 @@ For dimension equals 15 and number of points equals 100000.(time in seconds/numb
 
 
 ## Step One
-This step is implementing **The Randomized k-d Tree**
+This step is implementing **The Randomized k-d Tree.**
 
 1. Current Status:
 	* Constructing The Tree: **done**
