@@ -51,6 +51,7 @@ This step is implementing **The Randomized k-d Tree**
 2. Testing:
 	Similarly to the k-d tree, we tested the randomized k-d tree algorithm by comporing it to the naive algorithm in order to show its correctness and to compare its efficiency. the testing is done over a random set of points shosen from a uniform distribution. 
 	We computed the construction time for a randomied k-d forest of size 20 over set of points of dimension equals to 25.
+	Furthermore, we tested the search algorithm for different forest size in a fixed dimension, and we computed the precision for each size.
 
 Graphs for some results:
 Construction time(in seconds) for 20 trees with respect to the number of points(with dimension equals to 25).
@@ -58,6 +59,31 @@ Construction time(in seconds) for 20 trees with respect to the number of points(
 
 Construction time(in seconds) for 20 trees with respect to the dimension (with 1000 points for each dimension).
 ![](./imges/dim1000.png)
+
+Search time(in seconds) for 10 trees with respect to the number ofpoints(with dimension equals to 10). The search precision is equal to 43.44%.
+![](./imges/10000_10_43_44.png)
+
+Search time(in seconds) for 15 trees with respect to the number ofpoints(with dimension equals to 10). The search precision is equal to 65.25%.
+![](./imges/1000_15_62_25.png)
+
+Search time(in seconds) for 20 trees with respect to the number ofpoints(with dimension equals to 10). The search precision is equal to 73%.
+![](./imges/1000_20_73.png)
+
+Search time(in seconds) for 25 trees with respect to the number ofpoints(with dimension equals to 10). The search precision is equal to 77.17%.
+![](./imges/1000_25_77_17.png)
+
+Search time(in seconds) for 30 trees with respect to the number ofpoints(with dimension equals to 10). The search precision is equal to 80.44%.
+![](./imges/1000_30_88_44.png)
+
+Search time(in seconds) for 35 trees with respect to the number ofpoints(with dimension equals to 10). The search precision is equal to 84%.
+![](./imges/1000_35_84_00.png)
+
+Search time(in seconds) for 40 trees with respect to the number ofpoints(with dimension equals to 10). The search precision is equal to 86%.
+![](./imges/1000_40_86_00.png)
+
+Search time(in seconds) for 50 trees with respect to the number ofpoints(with dimension equals to 10). The search precision is equal to 90%.
+![](./imges/1000_50_90_00.png)
+
 
 ## Step Two
 This Step is implementing **The Priority Search K-Means Tree**

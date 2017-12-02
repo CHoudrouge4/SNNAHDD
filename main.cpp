@@ -147,8 +147,8 @@ void test1() {
 	int total = 0;
 	int count = 0;		
 	std::uniform_int_distribution<> dis(1000, 10000);
-	int trees = 5;
-	for(int i = 10; i < 10000; i += 10) {
+	int trees = 55;
+	for(int i = 10; i < 1000; i += 10) {
 		int size = i; //dis(gen);
 		int dim  = 10;
 	//	std::cin >> size >> dim;
