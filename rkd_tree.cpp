@@ -21,8 +21,17 @@ std::mt19937 rkd_tree::gen(rd());
 std::uniform_int_distribution<> rkd_tree::dis(0, rkd_tree::ND);
 
 rkd_tree::rkd_tree(const std::string file_name) {
+	construct(file_name);
+}
+
+rkd_tree::rkd_tree(const std::string file_name, int n) {
+	ND = n;
+	construct(file_name);
+}
+
+void rkd_tree::construct(const std::string file_name) {
 	read_point(file_name);
-	roots = std::vector<std::shared_ptr<node>>(20);
+	roots = std::vector<std::shared_ptr<node>>(ND);
 	for(size_t i = 0; i < roots.size(); ++i) {
 
 		roots[i] = std::make_shared<node>();
@@ -37,7 +46,6 @@ rkd_tree::rkd_tree(const std::string file_name) {
 		construct(roots[i], index);
 		std::cout << "done constructiing root " << i << '\n';
 	}
-	limit = 2; //ceil(0.05 * points.size());
 }
 
 void rkd_tree::read_point(const std::string file_name) {
@@ -213,65 +221,96 @@ std::vector<int> rkd_tree::search(const std::vector<point> &query) {
 
 int rkd_tree::search(const point &q) {
 	std::set<std::pair<double, int>> pq;
-	std::vector<bool> explored(points.size(), false);
-	std::vector<std::thread> ths(roots.size());
-	std::vector<int> res(roots.size());
+	int res = 0;
+	int count = 0;
+	double R = std::numeric_limits<double>::max(); 
 	for(size_t i = 0; i < roots.size(); ++i) {
-		int count = 0;
-		double R = std::numeric_limits<double>::max(); 
 		double pmed = roots[i]->median;
-		ths[i] = std::thread(&rkd_tree::explore, this, std::ref(roots[i]), std::ref(q), std::ref(R), std::ref(res[i]), pmed, std::ref(count), std::ref(pq), std::ref(explored));
-		//explore(roots[i], q, R, res[i], pmed, count, pq, explored);
+		explore(roots[i], q, R, res, pmed, count, pq, i);
 	}
-
-	for(size_t i = 0; i < roots.size(); ++i) ths[i].join();
-	return (*pq.begin()).second;
+	
+//	std::cout << "pq size = " << pq.size() << std::endl;
+	double betterR = std::numeric_limits<double>::max();
+	while(!pq.empty() && betterR > R) {
+		auto p = *pq.begin();
+		pq.erase(pq.begin());
+		int rp = p.first;
+		int m  = p.second;
+		explore_best(roots[m], q, betterR, res, pq, m, rp);	
+		if(betterR < R) {
+			R = betterR;
+		}
+	}
+	return res;
 }
 
-void rkd_tree::explore(std::shared_ptr<node> &current, const point &q, double &R, int &res, double pmed, 											int &count, std::set<std::pair<double, int>> &pq, std::vector<bool> &explored) {
+void rkd_tree::explore_best(std::shared_ptr<node> &current, const point &q, double &R, int &res, std::set<std::pair<double, int>> &pq, int m, int rp) {
+	if(current == nullptr) return;
+	if(current-> left == nullptr && current->right == nullptr && current->pts.size() != 0) {
+		double d = dist(points[current->pts[0]], q);
+		if(d < R) {
+			R = d;
+			res  = current->pts[0];
 
-	if(count >= limit) return;
+			double pmed = current->parent->median;
+			int index = current->parent->index;
+			point plane = q;
+			plane[index] = pmed;
+			double r = dist(plane, q);
+			pq.insert({r, m});
+		}
+		
+	} else {
+		double med = current->median;
+		int index  = current->index;
+		point plane = q;
+		plane[index] = med;
+		double r = dist(plane, q);
+		if(rp <= r) {
+			if(q[index] <= med)
+				explore_best(current->right, q, r, res, pq, m, rp);
+			else 
+				explore_best(current->left, q, r, res, pq, m, rp);
+		} else {
+			if(q[index] <= med)
+				explore_best(current->right, q, r, res, pq, m, rp);
+			else 
+				explore_best(current->left, q, r, res, pq, m, rp);	
+		}
+	
+			//if(q[index] <= med && rp <= r)
+			//	explore_best(current->right, q, R, res, pq, explored, m, rp);
+			 
+			//if(q[index] > med && rp <= r) {
+			//	explore_best(current->left , q, R, res, pq, explored, m, rp);
+			//}	
+	}	
+}
+
+void rkd_tree::explore(std::shared_ptr<node> &current, const point &q, double &R, int &res, double pmed, 							   
+			int &count, std::set<std::pair<double, int>> &pq, int m) {
+
 	if(current == nullptr) return;
 	if(current->left == nullptr && current->right == nullptr && current->pts.size() != 0) {
 		double d = dist(points[current->pts[0]], q);  //compure the distance between p and q where p is the only node in the leaf node
 		if(d < R) {
 			R = d;
 			res = current->pts[0];
-			pmed = current->parent->median;
-			explored[res] = true;
-			count++;
-			mx.lock();
-			pq.insert({d, res});
-			mx.unlock();
+		    double pmed = current->parent->median;
+			int index = current->parent->index;
+			point plane = q;
+			plane[index] = pmed;
+			double r = dist(plane, q);
+			pq.insert({r, m});
+		//	std::cout << "done inserting ........" << std::endl;
 		}
 	} else {
 		double med = current->median;
 		int index  = current->index;
-		bool exp;
-		if(q[index] <= med) {
-			exp = true;
-			explore(current->left,  q, R, res, pmed, count, pq, explored);
-		} else {
-			exp = false;
-			explore(current->right, q, R, res, pmed, count, pq, explored);
-		}
-		
-		if(count >= limit) return;
-		point plane = q;
-		plane[index] = med;
-		double r = dist(plane, q); 
-		if(r < R) {	
-			for(auto&& p: current->pts) {
-				if(!explored[p]) {
-					if(exp) {
-						explore(current->right, q, R, res, pmed, count, pq, explored);
-					}
-					if(!exp) { 
-						explore(current->left, q, R, res, pmed, count, pq, explored);
-					}
-				}
-			}
-		}
+		if(q[index] <= med)
+			explore(current->left,  q, R, res, pmed, count, pq, m);
+		 else
+			explore(current->right, q, R, res, pmed, count, pq, m);		
 	}
 }
 

@@ -144,24 +144,26 @@ void test1() {
 	std::ofstream in1("rkd_result.txt" , std::ios_base::app);
 	std::ofstream in2("rnaive.txt"	  , std::ios_base::app);
 	std::ofstream in3("rconst_time.txt", std::ios_base::app);
-	
+	int total = 0;
+	int count = 0;		
 	std::uniform_int_distribution<> dis(1000, 10000);
-	for(int i = 10; i < 1000; i += 5) {
-	int size = 1000; //dis(gen);
-	int dim  = i;
-//	std::cin >> size >> dim;
+	int trees = 5;
+	for(int i = 10; i < 10000; i += 10) {
+		int size = i; //dis(gen);
+		int dim  = 10;
+	//	std::cin >> size >> dim;
 	generate_data(size, dim);
-	std::vector<point> query = generate_query(size, dim);
+	std::vector<point> query = generate_query(100, dim);
 	//std::vector<point> query = {{4, 2}};	
 		
 	auto start = std::chrono::system_clock::now();
-	rkd_tree rk("data.txt");
+	rkd_tree rk("data.txt", trees);
 	auto end   = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_time = end - start;
 	in3 << rk.size() << ' ' << rk.get_dimension() << ' ' << elapsed_time.count() << '\n';
-	}
+
 //	std::cout << rk << '\n';
-/*	start = std::chrono::system_clock::now();
+	start = std::chrono::system_clock::now();
 	std::vector<int> result = rk.search(query);
 	end   = std::chrono::system_clock::now();
 	elapsed_time = end - start;
@@ -178,8 +180,8 @@ void test1() {
 	in2 << rk.size() << ' ' <<  query.size() << ' ' <<  rk.get_dimension() <<' ' << elapsed_time.count() << '\n';
 	
 	std::cout << "Done naive search" << std::endl;
+	
 
-	int count = 0;
 	for(size_t i = 0; i < result.size(); ++i) {
 		if(result[i] == result_naive[i]) {
 			std::cout << result[i] << " == " << result_naive[i] <<  " [OK] " << '\n';
@@ -192,8 +194,9 @@ void test1() {
 					  << "d(query[" << i << "]," << " result[" << i << "]) = " << dist(query[i], pts[result[i]])
 					  << " d(query[" << i << "]," << " result_naive[" << i << "]) = " << dist(query[i], pts[result_naive[i]]) << '\n';
 	}		
-
-	std::cout << "\n success rate is: " << (count /((double) query.size())) * 100 << '\n';*/
+	total += query.size();
+	}
+	std::cout << "\n success rate is: " << (count /((double) total) * 100) << '\n';
 	in1.close();
 	in2.close();
 	in3.close();

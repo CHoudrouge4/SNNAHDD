@@ -23,7 +23,6 @@ private:
 	static std::random_device rd;
 	static std::mt19937 gen;
 	static std::uniform_int_distribution<> dis;
-	std::mutex mx;	
 
 	rkd_tree() {}
 
@@ -33,10 +32,13 @@ private:
 	double variance(const point &p);	
 	int    split_dimension(std::shared_ptr<node> &current);
 	void construct(std::shared_ptr<node> &current, int index);	
+	void construct(const std::string file_name);
 	void read_point(const std::string file_name);
 
 	std::string print(std::shared_ptr<node> &current);
-	void explore(std::shared_ptr<node> &current, const point &q, double &R, int &res, double pmed, int &count, std::set<std::pair<double, int>> &pq, std::vector<bool> &explored);		
+	void explore(std::shared_ptr<node> &current, const point &q, double &R, int &res, double pmed, int &count, std::set<std::pair<double, int>> &pq, int m);
+
+	void explore_best(std::shared_ptr<node> &current, const point &q, double &R, int &res, std::set<std::pair<double, int>> &pq, int m, int rp); 
 	int search(const point &q);
 	std::string print();
 

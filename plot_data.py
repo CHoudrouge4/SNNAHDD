@@ -22,8 +22,8 @@ plt.xlabel('Dimension (using 1000 points)')
 plt.show()
 
 
-naive_result = read_data('naive.txt')
-k_result     = read_data('kd_result.txt')
+naive_result = read_data('rnaive.txt')
+k_result     = read_data('rkd_result.txt')
 
 x_axis = []
 n_axis = []
