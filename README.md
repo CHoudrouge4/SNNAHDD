@@ -70,7 +70,7 @@ Search time(in seconds) for 25 trees with respect to the number of points(with d
 ![](./imges/test1/25_trees_15_leafs_10000_74.38_.png)
 
 Search time(in seconds) for 25 trees with respect to the number of points(with dimension equals to 10). The search precision is equal to 92.99% (the number of explored leafs is 20).
-![](./imges/test1/25_trees_20_leafs 10000_92.99_.png)
+![](./imges/test1/25_trees_20_leafs_10000_92_99_.png)
 
 In addition, we tested the relation between the number of trees/number of leafs and the precision/performance.
 
