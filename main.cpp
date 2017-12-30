@@ -29,7 +29,7 @@ std::string point_to_string(const point p) {
 	return o.str();
 }
 
-std::vector<point> generate_query(const int size, const int dim) {	
+std::vector<point> generate_query(const int size, const int dim) {
 	std::ofstream out("query.txt");
 	std::uniform_int_distribution<> d(1, size);
 	int qsize = size;//d(gen);
@@ -87,7 +87,7 @@ void test0() {
 	std::ofstream in1("kd_result.txt" , std::ios_base::app);
 	std::ofstream in2("naive.txt"	  , std::ios_base::app);
 	std::ofstream in3("const_time.txt", std::ios_base::app);
-	
+
 	std::uniform_int_distribution<> dis(1000, 10000);
 	int size; //dis(gen);
 	int dim = 10;
@@ -95,8 +95,8 @@ void test0() {
 	for(size = 0; size < 10000; size += 100) {
 	generate_data(size, dim);
 	std::vector<point> query = generate_query(100, dim);
-	//std::vector<point> query = {{4, 2}};	
-		
+	//std::vector<point> query = {{4, 2}};
+
 	auto start = std::chrono::system_clock::now();
 	kd_tree k("data.txt");
 	auto end   = std::chrono::system_clock::now();
@@ -110,7 +110,7 @@ i
 	end   = std::chrono::system_clock::now();
 	elapsed_time = end - start;
 	in1 << k.size() << ' ' << query.size() <<  ' ' << k.get_dimension() << ' ' << elapsed_time.count() << '\n';
-	
+
 	std::cout << "Done kd search" << std::endl;
 
    	const std::vector<point> pts = k.get_points();
@@ -120,7 +120,7 @@ i
 	end   = std::chrono::system_clock::now();
 	elapsed_time = end - start;
 	in2 << k.size() << ' ' <<  query.size() << ' ' <<  k.get_dimension() <<' ' << elapsed_time.count() << '\n';
-	
+
 	std::cout << "Done naive search" << std::endl;
 
 	for(size_t i = 0; i < result.size(); ++i) {
@@ -144,57 +144,63 @@ void test1() {
 	std::ofstream in1("rkd_result.txt" , std::ios_base::app);
 	std::ofstream in2("rnaive.txt"	  , std::ios_base::app);
 	std::ofstream in3("rconst_time.txt", std::ios_base::app);
+	std::ofstream in4("performance_trees.txt", std::ios_base::app);
+
 	int total = 0;
-	int count = 0;		
 	std::uniform_int_distribution<> dis(1000, 10000);
-	int trees = 55;
-	for(int i = 10; i < 1000; i += 10) {
-		int size = i; //dis(gen);
+	int count = 0;
+
+	for(int i = 1; i <= 40; i += 1) {
+		int trees = i;
+		int size = 10000; //dis(gen);
 		int dim  = 10;
-	//	std::cin >> size >> dim;
-	generate_data(size, dim);
-	std::vector<point> query = generate_query(100, dim);
-	//std::vector<point> query = {{4, 2}};	
-		
-	auto start = std::chrono::system_clock::now();
-	rkd_tree rk("data.txt", trees);
-	auto end   = std::chrono::system_clock::now();
-	std::chrono::duration<double> elapsed_time = end - start;
-	in3 << rk.size() << ' ' << rk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+		//	std::cin >> size >> dim;
+		generate_data(size, dim);
+		std::vector<point> query = generate_query(100, dim);
+		//std::vector<point> query = {{4, 2}};
 
-//	std::cout << rk << '\n';
-	start = std::chrono::system_clock::now();
-	std::vector<int> result = rk.search(query);
-	end   = std::chrono::system_clock::now();
-	elapsed_time = end - start;
-	in1 << rk.size() << ' ' << query.size() <<  ' ' << rk.get_dimension() << ' ' << elapsed_time.count() << '\n';
-	
-	std::cout << "Done randomized kd search" << std::endl;
+		auto start = std::chrono::system_clock::now();
+		rkd_tree rk("data.txt", trees, 16);
+		auto end   = std::chrono::system_clock::now();
+		std::chrono::duration<double> elapsed_time = end - start;
+		in3 << rk.size() << ' ' << rk.get_dimension() << ' ' << elapsed_time.count() << '\n';
 
-   	const std::vector<point> pts = rk.get_points();
+	//	std::cout << rk << '\n';
+		start = std::chrono::system_clock::now();
+		std::vector<int> result = rk.search(query);
+		end   = std::chrono::system_clock::now();
+		elapsed_time = end - start;
+		in1 << rk.size() << ' ' << query.size() <<  ' ' << rk.get_dimension() << ' ' << elapsed_time.count() << '\n';
 
-	start = std::chrono::system_clock::now();
-	std::vector<int> result_naive = naive(pts, query);
-	end   = std::chrono::system_clock::now();
-	elapsed_time = end - start;
-	in2 << rk.size() << ' ' <<  query.size() << ' ' <<  rk.get_dimension() <<' ' << elapsed_time.count() << '\n';
-	
-	std::cout << "Done naive search" << std::endl;
-	
+		in4 << i << ' ' << elapsed_time.count() << '\n';
+		std::cout << "Done randomized kd search" << std::endl;
 
-	for(size_t i = 0; i < result.size(); ++i) {
-		if(result[i] == result_naive[i]) {
-			std::cout << result[i] << " == " << result_naive[i] <<  " [OK] " << '\n';
-			count++;
-		} else
-			std::cout << "[FAILED]" << '\n'
-					  << "ANALYSIS:" << '\n'
-					  << "Query: "    << i << ' ' << result[i] << " != " << result_naive[i] << '\n'
-					  << "distance:" << '\n'
-					  << "d(query[" << i << "]," << " result[" << i << "]) = " << dist(query[i], pts[result[i]])
-					  << " d(query[" << i << "]," << " result_naive[" << i << "]) = " << dist(query[i], pts[result_naive[i]]) << '\n';
-	}		
-	total += query.size();
+	  const std::vector<point> pts = rk.get_points();
+
+		start = std::chrono::system_clock::now();
+		std::vector<int> result_naive = naive(pts, query);
+		end   = std::chrono::system_clock::now();
+		elapsed_time = end - start;
+		in2 << rk.size() << ' ' <<  query.size() << ' ' <<  rk.get_dimension() <<' ' << elapsed_time.count() << '\n';
+
+		std::cout << "Done naive search" << std::endl;
+
+	 	for(size_t i = 0; i < result.size(); ++i) {
+			double a = dist(pts[result_naive[i]], query[i]);
+			if(std::abs(a - dist(pts[result[i]], query[i]))/ a < 0.1) { //result[i] == result_naive[i]
+				std::cout << result[i] << " == " << result_naive[i] <<  " [OK] " << '\n';
+				count++;
+			} else
+				std::cout << "[FAILED]" << '\n'
+						  << "ANALYSIS:" << '\n'
+						  << "Query: "    << i << ' ' << result[i] << " != " << result_naive[i] << '\n'
+						  << "distance:" << '\n'
+						  << "d(query[" << i << "]," << " result[" << i << "]) = " << dist(query[i], pts[result[i]])
+						  << " d(query[" << i << "]," << " result_naive[" << i << "]) = " << dist(query[i], pts[result_naive[i]]) << '\n';
+		}
+
+		total += query.size();
+		//in4 << i << ' ' << (count /((double) total) * 100) << '\n';
 	}
 	std::cout << "\n success rate is: " << (count /((double) total) * 100) << '\n';
 	in1.close();

@@ -1,0 +1,44 @@
+
+/*void rkd_tree::explore_best(std::shared_ptr<node> &current, const point &q, double &R, int &res, std::set<std::pair<double, int>> &pq, int m, int rp) {
+	if(current == nullptr) return;
+	if(current-> left == nullptr && current->right == nullptr && current->pts.size() != 0) {
+		double d = dist(points[current->pts[0]], q);
+		if(d < R) {
+			R = d;
+			res  = current->pts[0];
+			double pmed = current->parent->median;
+			int index = current->parent->index;
+			point plane = q;
+			plane[index] = pmed;
+			double r = dist(plane, q);
+			pq.insert({r, m});
+		}
+
+	} else {
+		double med = current->median;
+		int index  = current->index;
+		point plane = q;
+		plane[index] = med;
+		double r = dist(plane, q);
+		if(rp <= r) {
+			if(q[index] <= med)
+				explore_best(current->right, q, r, res, pq, m, rp);
+			else
+				explore_best(current->left, q, r, res, pq, m, rp);
+		} else {
+			if(q[index] <= med)
+				explore_best(current->right, q, r, res, pq, m, rp);
+			else
+				explore_best(current->left, q, r, res, pq, m, rp);
+		}
+	}
+}
+*/
+
+
+//	  double pmed  = current->parent->median;
+//		int index    = current->parent->index;
+//		point plane  = q;
+//		plane[index] = pmed;
+//		double r = dist(plane, q);
+//		pq.insert({r, m});

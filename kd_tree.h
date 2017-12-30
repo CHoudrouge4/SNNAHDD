@@ -1,10 +1,10 @@
-#pragma once 
+#pragma once
 #include <fstream>
 #include <vector>
 #include <memory>
 #include "node.h"
 /**
- * TODO: overide << yes (I need to improve it). 
+ * TODO: overide << yes (I need to improve it).
  * Testing. 95%
  * add aditional constructors.
  * Make the code modular concerning the cluctiring algorithm, not yet
@@ -12,40 +12,39 @@
  * change the way of getting the result. almost done
  * */
 
-
-class kd_tree {	
+class kd_tree {
 friend std::ostream &operator<<(std::ostream &out, kd_tree &k) {
 	out << k.print();
 	return out;
 }
 
-private: 
+private:
 	const double epsilon = 0.001;
 	int dimension; // store the dimension of the space
 	std::shared_ptr<node> root = std::make_shared<node>();
 	std::vector<point> points; // stors all the points in the space
 
-	
+
 	kd_tree() {}
 	/**
  	* this function computes the square of the ecludian distance
- 	* between point p and q 
+ 	* between point p and q
  	*/
 	double dist(const point &p, const point &q);
 
 	/**
-	* this function computes the median 
+	* this function computes the median
  	* for a vector of values.
  	* NOTE: v is not sorted
  	*/
-	double median(std::vector<double> &v);  
+	double median(std::vector<double> &v);
 	/**
  	* This function construct the kd-tree
  	*
  	*/
 	void   construct(std::shared_ptr<node> &current, int index);
 	/**
- 	* this function reads points from a file 
+ 	* this function reads points from a file
  	* and stors them in "points"
  	*
  	*/
@@ -61,22 +60,22 @@ private:
 
 public:
 	/**
- 	* A constructor 
- 	* it takes a file name that contains a set of points and creat 
+ 	* A constructor
+ 	* it takes a file name that contains a set of points and creat
  	* a kd-tree.
  	*/
 	kd_tree(const std::string file_name);
-	
+
 	kd_tree(const std::string file_name, double (*)(point &a, point &b));
 
 	/**
-	* @param: query is a vector of point that we want to search for 
+	* @param: query is a vector of point that we want to search for
 	* their nearest neighbor.
 	*/
 	std::vector<int> search(std::vector<point> &query);
 
 	/**
- 	* this function takes an index and return 
+ 	* this function takes an index and return
  	* its corresponding point.
  	*/
 	point get_point(const int i) const;
@@ -92,15 +91,15 @@ public:
  	* in points
  	*/
 	std::vector<point> get_points() const;
-	
+
 	/*
- 	* This function returns the number of the points 
+ 	* This function returns the number of the points
  	* in the tree
 	*/
 	size_t size() const;
 
 	/*
- 	* This function return the dimension of the points 
+ 	* This function return the dimension of the points
  	* stored
  	*/
 	int get_dimension() const;
