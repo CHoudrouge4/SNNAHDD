@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-typedef std::vector<double> point; 
+typedef std::vector<double> point;
 template <class T>
 std::ostream& operator<<(std::ostream& out, const std::vector<T>& v) {
 	if(v.size() == 0) {
@@ -20,13 +20,15 @@ std::ostream& operator<<(std::ostream& out, const std::vector<T>& v) {
 }
 
 struct node {
-	double r; 
+	double r;
 	double median;
 	int index; // the index that we computed the median with respect to it.
 	std::vector<int> pts;
 	std::shared_ptr<node> left;   // pointer to the left child
 	std::shared_ptr<node> right;  // pointer to the right child
 	std::shared_ptr<node> parent; // pointer to the parent
+	std::vector<std::shared_ptr<node>> children;
+	point center;
 	friend std::ostream &operator<<(std::ostream &out, node& n) {
 		out << "NODE"
 			<< " M: " <<  n.median

@@ -6,20 +6,20 @@ def read_data(fileName):
     content = [x.strip() for x in content]
     return content
 
-#l = read_data('precision_trees.txt')
+l = read_data('pk_const_time.txt')
 
-#x  = []
-#y  = []
-#for e in l:
-#    ll =  e.split()
-#    x.append(ll[0])
-#    y.append(ll[1]);
-#    print ll[0] + ' ' + ll[2]
+x  = []
+y  = []
+for e in l:
+    ll =  e.split()
+    x.append(ll[0])
+    y.append(ll[2]);
+  #  print ll[0] + ' ' + ll[2]
 
-#plt.plot(x, y, 'bo')
-#plt.ylabel('precision');
-#plt.xlabel('number of trees')
-#plt.show()
+plt.plot(x, y, 'bo')
+plt.ylabel('time');
+plt.xlabel('number of points')
+plt.show()
 
 naive_result = read_data('./results/performance_trees.txt')
 k_result     = read_data('./results/precision_trees.txt')

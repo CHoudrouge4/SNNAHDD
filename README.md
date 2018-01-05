@@ -47,7 +47,7 @@ This step is implementing **The Randomized k-d Tree.**
 
 1. Current Status:
 	* Constructing The Tree: **done**
-	* Querying  The tree: **Need Improvement**
+	* Querying  The tree: **done**
 2. Testing:
 	Similarly to the k-d tree, we tested the randomized k-d tree algorithm by comparing it to the naive algorithm in order to show its correctness and to compare its efficiency. the testing is done over a random set of points chosen from a uniform distribution.
 	We computed the construction time for a randomized k-d forest of size 20 over a set of points of dimension equals to 25.
@@ -98,6 +98,36 @@ and the following one combines the performance and the precision with respect to
 
 ## Step Two
 This Step is implementing **The Priority Search K-Means Tree**
+
+1. Current Status:
+	* Constructing The Tree: **done**
+	* Querying  The tree: **soon**
+2. Testing:
+	We started testing the performance of constructing the Priority Search K-Means Tree.
+	for this purpose we did multiple graphs where each changed one of the variables k (the maximum size of the cluster), Imax (maximum number of iteration to construct a cluster), and the dimension of the data.
+
+The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 2, k = 4, and Imax = 10.
+![](./imges/pk/100000_2_4_10.png)
+
+The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 10, k = 4, and Imax = 10.
+![](./imges/pk/10000_10_4_10.png)
+
+The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 10, k = 4, and Imax = 20.
+![](./imges/pk/10000_10_4_20.png)
+
+The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 10, k = 4, and Imax = 60.
+![](./imges/pk/10000_10_4_60.png)
+
+The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 10, k = 10, and Imax = 10.
+![](./imges/pk/10000_10_10_10.png)
+
+The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 10, k = 16, and Imax = 10.
+![](./imges/pk/10000_10_16_10.png)
+
+
+
+
+
 
 ## Step Three
 TBA.

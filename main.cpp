@@ -4,12 +4,13 @@
 #include <memory>
 #include "kd_tree.h"
 #include "rkd_tree.h"
+#include "pk_tree.h"
 #include <cmath>
 #include <random>
 #include <limits>
 #include <chrono>
 #include <sstream>
-#define RANGE 1000
+#define RANGE 20
 
 static std::random_device rd;
 static std::mt19937 gen(rd());
@@ -141,7 +142,7 @@ i
 }*/
 
 void test1() {
-	std::ofstream in1("rkd_result.txt" , std::ios_base::app);
+	/*std::ofstream in1("rkd_result.txt" , std::ios_base::app);
 	std::ofstream in2("rnaive.txt"	  , std::ios_base::app);
 	std::ofstream in3("rconst_time.txt", std::ios_base::app);
 	std::ofstream in4("performance_trees.txt", std::ios_base::app);
@@ -205,10 +206,34 @@ void test1() {
 	std::cout << "\n success rate is: " << (count /((double) total) * 100) << '\n';
 	in1.close();
 	in2.close();
+	in3.close();*/
+}
+
+void test2() {
+	//std::ofstream in1("rkd_result.txt" , std::ios_base::app);
+	//std::ofstream in2("rnaive.txt"	  , std::ios_base::app);
+	std::ofstream in3("pk_const_time.txt", std::ios_base::app);
+	//std::ofstream in4("performance_trees.txt", std::ios_base::app);
+	for(int i = 10; i <= 10000; i += 100) {
+		int k = 16;
+		int imax = 10;
+		int size = i;
+		int dim  = 10;
+		generate_data(size, dim);
+
+		auto start = std::chrono::system_clock::now();
+		pk_tree pk("data.txt", k, imax);
+		auto end   = std::chrono::system_clock::now();
+		std::chrono::duration<double> elapsed_time = end - start;
+		in3 << pk.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+	}
+	//in1.close();
+	//in2.close();
 	in3.close();
 }
 
 int main() {
-	test1();
+//	test1();
+	test2();
 	return 0;
 }

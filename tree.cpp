@@ -14,13 +14,19 @@
 #include <memory>
 #include <cmath>
 #include <functional>
+#include <unordered_set>
+
+int tree::compute_dimension() const {
+	if(points.size() > 0) return points[0].size();
+	throw std::invalid_argument("Incorrect dimension\n");
+}
 
 void tree::read_point(const std::string file_name) {
 	srand(static_cast<unsigned> (time(0)));
 	std::ifstream in(file_name);
 	int n, m; in >> n >> m;
 	double t;
-	std::set<point> s;
+//	std::set<point> s;
 	for(int i = 0; i < n; ++i) {
 		point p;
 		for(int j = 0; j < m; ++j) {
@@ -110,6 +116,15 @@ std::vector<point> tree::get_points(const std::vector<int> &v) const {
 	}
 	return result;
 }
+
+std::vector<point> tree::get_points(const std::unordered_set<int> &s) const {
+	std::vector<point> result;
+	for(auto&& e: s) {
+		result.push_back(get_point(e));
+	}
+	return result;
+}
+
 
 size_t tree::size() { return points.size(); }
 int tree::get_dimension() const { return dimension; }
