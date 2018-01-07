@@ -90,10 +90,10 @@ The following graph represents the change of precision with respect to the numbe
 The following graph represents the change of precision with respect to the number of trees.
 ![](./imges/leaf_trees/precision_trees.png)
 
-Now, we ll present the performance and the precision with respect to number of visited leafs on the same graph.
+Now, we present the performance(in red) and the precision(in green) with respect to number of visited leafs on the same graph.
 ![](./imges/test1/precision_performance_leafs.png)
 
-and the following one combines the performance and the precision with respect to number of trees.
+and the following one combines the performance(in red) and the precision(in green) with respect to number of trees.
 ![](./imges/test1/precision_performance_trees.png)
 
 ## Step Two
@@ -123,10 +123,6 @@ The following graph represents the change of the time (in seconds) with respect 
 
 The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 10, k = 16, and Imax = 10.
 ![](./imges/pk/10000_10_16_10.png)
-
-
-
-
 
 
 ## Step Three

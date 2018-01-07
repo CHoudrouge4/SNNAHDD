@@ -106,3 +106,32 @@ void pk_tree::construct(std::shared_ptr<node> &current) {
     j++;
   }
 }
+/*
+std::vector<int> pk_tree::search(point &q, int l) {
+  int count = 0;
+  std::set<std::pair<double, int>> PQ;
+  std::set<std::pair<double, int>> R;
+
+}
+
+void pk_tree::traverse(std::shared_ptr<node> &current,
+                            std::set<std::pair<double, int>> &PQ,
+                            std::set<std::pair<double, int>> &R, int &count, point &q) {
+
+  if(current == nullptr) return;
+  if(current->left == nullptr && current->right == nullptr && current->pts.size() != 0) {
+    for(auto&& e: current->pts) {
+      double d = dist(points[e], q);
+      R.insert({d, e});
+    }
+    count += current->pts.size();
+  } else {
+      auto C = current->children;
+      std::shared_ptr<node> cq;
+      for(auto&& e: C) {
+        double d = dist(e->center, q);
+
+      }
+  }
+}
+*/
