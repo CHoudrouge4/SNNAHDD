@@ -125,7 +125,6 @@ std::vector<point> tree::get_points(const std::unordered_set<int> &s) const {
 	return result;
 }
 
-
 size_t tree::size() { return points.size(); }
 int tree::get_dimension() const { return dimension; }
 

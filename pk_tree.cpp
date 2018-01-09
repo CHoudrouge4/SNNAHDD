@@ -106,16 +106,28 @@ void pk_tree::construct(std::shared_ptr<node> &current) {
     j++;
   }
 }
-/*
-std::vector<int> pk_tree::search(point &q, int l) {
-  int count = 0;
-  std::set<std::pair<double, int>> PQ;
-  std::set<std::pair<double, int>> R;
 
+std::vector<int> pk_tree::search(point &q, int L) {
+  int count = 0;
+  std::set<std::pair<double, std::shared_ptr<node>>> PQ;
+  std::set<std::pair<double, int>> R;
+  traverse(root, PQ, R, count, q);
+  while(!PQ.empty() && count < L) {
+    auto N = *PQ.begin();
+    PQ.erase(PQ.begin());
+    traverse(N.second, PQ, R, count, q);
+  }
+  std::vector<int> res(k);
+  int i = 0;
+  for(auto&& e : R) {
+    if(i >= k) break;
+    res[i++] = e.second;
+  }
+  return res;
 }
 
 void pk_tree::traverse(std::shared_ptr<node> &current,
-                            std::set<std::pair<double, int>> &PQ,
+                            std::set<std::pair<double, std::shared_ptr<node>>> &PQ,
                             std::set<std::pair<double, int>> &R, int &count, point &q) {
 
   if(current == nullptr) return;
@@ -127,11 +139,22 @@ void pk_tree::traverse(std::shared_ptr<node> &current,
     count += current->pts.size();
   } else {
       auto C = current->children;
+      std::vector<std::pair<double, std::shared_ptr<node>>> cp;
       std::shared_ptr<node> cq;
+      double mind = std::numeric_limits<double>::max();
+      int i = 0; int index = 0;
       for(auto&& e: C) {
         double d = dist(e->center, q);
-
+        cp.push_back({d, e});
+        if(mind < d) {
+          mind = d;
+          cq = e;
+          index = i;
+        }
+        i++;
       }
+      cp.erase(cp.begin() + index);
+      PQ.insert(cp.begin(), cp.end());
+      traverse(cq, PQ, R, count, q);
   }
 }
-*/

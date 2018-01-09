@@ -21,7 +21,10 @@ private:
   std::vector<point> get_P(std::vector<cluster>&);
   std::vector<cluster> clustering(const std::vector<point>&, const std::vector<int>&);
   void construct(std::shared_ptr<node>&);
-
+  std::vector<int> search(point&, int);
+  void traverse(std::shared_ptr<node> &,
+                std::set<std::pair<double, std::shared_ptr<node>>> &,
+                std::set<std::pair<double, int>> &, int&, point &);
 public:
   pk_tree(std::string, int, int);
 
