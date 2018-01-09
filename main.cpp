@@ -10,6 +10,8 @@
 #include <limits>
 #include <chrono>
 #include <sstream>
+#include <algorithm>
+
 #define RANGE 20
 
 static std::random_device rd;
@@ -81,6 +83,27 @@ std::vector<int> naive(const std::vector<point> &pts, std::vector<point> &query)
 	}
 	return res;
 }
+
+std::vector<std::vector<int>> knaive(const std::vector<point> &pts, std::vector<point> &query, int k) {
+	std::vector<std::vector<int>> res;
+	for(auto q: query) {
+		std::vector<std::pair<double, int>> tmp(pts.size());
+		for(int i = 0; i < pts.size(); ++i) {
+			double distance = dist(pts[i], q);
+			tmp[i] = {distance, i};
+		}
+		std::sort(tmp.begin(), tmp.end());
+		int i = 0;
+		std::vector<int> result(k);
+		for(auto&& e: tmp) {
+			if(i > k) break;
+			result[i++] = e.second;
+		}
+		res.push_back(result);
+	}
+	return res;
+}
+
 /*
 void test0() {
 //	int num = std::abs(dis(gen));
@@ -210,14 +233,14 @@ void test1() {
 }
 
 void test2() {
-	//std::ofstream in1("rkd_result.txt" , std::ios_base::app);
-	//std::ofstream in2("rnaive.txt"	  , std::ios_base::app);
+	std::ofstream in1("pk_result.txt" , std::ios_base::app);
+	std::ofstream in2("pk_naive.txt"	  , std::ios_base::app);
 	std::ofstream in3("pk_const_time.txt", std::ios_base::app);
 	//std::ofstream in4("performance_trees.txt", std::ios_base::app);
-	for(int i = 10; i <= 10000; i += 100) {
-		int k = 16;
-		int imax = 10;
-		int size = i;
+	//for(int i = 10; i <= 10000; i += 100) {
+		int k = 4;
+		int imax = 4;
+		int size = 1000;
 		int dim  = 10;
 		generate_data(size, dim);
 
@@ -226,7 +249,30 @@ void test2() {
 		auto end   = std::chrono::system_clock::now();
 		std::chrono::duration<double> elapsed_time = end - start;
 		in3 << pk.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
-	}
+
+		std::vector<point> query = generate_query(size, dim);
+
+		start = std::chrono::system_clock::now();
+		auto pk_result = pk.search(query, 7);
+		end = std::chrono::system_clock::now();
+		elapsed_time = end - start;
+		in1 << pk.size() << ' ' << query.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+
+		auto pts = pk.get_points();
+
+		start = std::chrono::system_clock::now();
+		auto naive_result = knaive(pts, query, k);
+		end = std::chrono::system_clock::now();
+		elapsed_time = end - start;
+		in2 << pk.size() << ' ' << query.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+
+
+		for(int i = 0; i < query.size(); ++i) {
+			if(naive_result[i] == pk_result[i]) std::cout << "[OK]" << std::endl;
+			else std::cout << "[FAILED]" << std::endl;
+		}
+
+	//}
 	//in1.close();
 	//in2.close();
 	in3.close();

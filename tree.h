@@ -27,6 +27,9 @@ class tree{
   	point get_point(const int i) const;
   	std::vector<point> get_points(const std::vector<int> &v) const;
     std::vector<point> get_points(const std::unordered_set<int> &) const;
+    template <typename Iter>
+    std::vector<point> get_points(Iter, Iter);
+
     int get_dimension() const;
   	size_t size();
 };

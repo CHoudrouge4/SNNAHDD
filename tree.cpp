@@ -125,6 +125,13 @@ std::vector<point> tree::get_points(const std::unordered_set<int> &s) const {
 	return result;
 }
 
+template <typename Iter>
+std::vector<point> tree::get_points(Iter it, Iter end) {
+    std::vector<point> res;
+    for (; it != end; ++it) res.push_back(get_point(*it));
+    return res;
+}
+
 size_t tree::size() { return points.size(); }
 int tree::get_dimension() const { return dimension; }
 

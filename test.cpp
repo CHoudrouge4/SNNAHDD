@@ -8,7 +8,6 @@ std::vector<int> bar (Iter it, Iter end) {
     for (; it!=end; ++it) {
       res.push_back(*it);
     }
-
     return res;
 }
 

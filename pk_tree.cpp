@@ -13,7 +13,6 @@ pk_tree::pk_tree(std::string file_name, int K, int I_max) {
   k = K;
   i_max = I_max;
   read_point(file_name);
-  //std::cout << points.size() << std::endl;
   dimension = compute_dimension();
   root = std::make_shared<node>();
   for(size_t i = 0; i < points.size(); ++i) root->pts.push_back(i);
@@ -38,19 +37,11 @@ std::vector<cluster> pk_tree::clustering(const std::vector<point> &centroid, con
     int index = 0;
     for(int i = 0; i < centroid.size(); ++i) {
       double d = dist(points[e], centroid[i]);
-    //  std::cout << "the distance between the point_e " << points[e] << " and the centrooid " << centroid[i] << " equals "
-    //  << d << std::endl;
       if(d <= max_distance) {
-        //std::cout << "here" << std::endl;
         max_distance = d;
         index = i;
       }
     }
-/*    std::cout << "the disstance is equal " << max_distance << std::endl;
-    std::cout << "----------------------------------------------" << std::endl;
-    std::cout << "point " << e << " to the cluster " << index << std::endl;
-    std::cout << "----------------------------------------------" << std::endl;*/
-    //std::cout << index << std::endl;
     c[index].push_back(e);
   }
   return c;
@@ -157,4 +148,13 @@ void pk_tree::traverse(std::shared_ptr<node> &current,
       PQ.insert(cp.begin(), cp.end());
       traverse(cq, PQ, R, count, q);
   }
+}
+
+std::vector<std::vector<int>> pk_tree::search(std::vector<point> &query, int l) {
+  std::vector<std::vector<int>> res(query.size());
+  int i = 0;
+  for(auto&& q: query) {
+    res[i++] = search(q, l);
+  }
+  return res;
 }
