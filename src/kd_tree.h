@@ -12,10 +12,7 @@ friend std::ostream &operator<<(std::ostream &out, kd_tree &k) {
 }
 
 private:
-	const double epsilon = 0.001;
-	int dimension; // store the dimension of the space
 	std::shared_ptr<node> root = std::make_shared<node>();
-	std::vector<point> points; // stors all the points in the space
 
 	kd_tree() {}
 

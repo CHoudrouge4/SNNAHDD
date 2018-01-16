@@ -15,7 +15,6 @@ friend std::ostream &operator<<(std::ostream &out, rkd_tree &k) {
 }
 
 private:
-	const double epsilon = 0.001;
 	int limit;
 	static int ND;
 	std::vector<std::shared_ptr<node>> roots;

@@ -25,6 +25,7 @@ void tree::read_point(const std::string file_name) {
 	srand(static_cast<unsigned> (time(0)));
 	std::ifstream in(file_name);
 	int n, m; in >> n >> m;
+	std::cout << n << ' ' << m << std::endl;
 	double t;
 //	std::set<point> s;
 	for(int i = 0; i < n; ++i) {

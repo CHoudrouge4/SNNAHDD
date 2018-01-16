@@ -13,7 +13,10 @@ pk_tree::pk_tree(std::string file_name, unsigned int K, int I_max) {
   k = K;
   i_max = I_max;
   read_point(file_name);
+  std::cout << points.size() << std::endl;
+  std::cout << "above" << std::endl;
   dimension = compute_dimension();
+  std::cout << "below" << std::endl;
   root = std::make_shared<node>();
   for(size_t i = 0; i < points.size(); ++i) root->pts.push_back(i);
   construct(root);

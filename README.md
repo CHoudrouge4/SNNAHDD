@@ -101,7 +101,7 @@ This Step is implementing **The Priority Search K-Means Tree**
 
 1. Current Status:
 	* Constructing The Tree: **done**
-	* Querying  The tree: **soon**
+	* Querying  The tree: **done**
 2. Testing:
 	We started testing the performance of constructing the Priority Search K-Means Tree.
 	for this purpose we did multiple graphs where each changed one of the variables k (the maximum size of the cluster), Imax (maximum number of iteration to construct a cluster), and the dimension of the data.
@@ -126,4 +126,11 @@ The following graph represents the change of the time (in seconds) with respect 
 
 
 ## Step Three
-TBA.
+General Testing
+In this step, we will show comparison between the previous three algorithm.
+We will conduct our testing in three different data instances. The first one is SIFT (Scale-invariant feature transform). The second one is data sampled from Normal distribution. The last one is data sampled from Uniform distribution.
+
+**SIFT DATA**
+The following graphs show the construction time for the three trees (algorithm);
+the k-d tree in red, randomized k-d tree forest in blue, and the k-means Priority tree in green
+![](./imges/sift_construction_time)

@@ -17,9 +17,10 @@ kd_tree::kd_tree(const std::string file_name) {
 		(root->pts).push_back(i);
 	}
 	if(points.size() > 0) dimension = points[0].size();
-	std::cout << "start constructing" << std::endl;
+
+//	std::cout << "start constructing" << std::endl;
 	construct(root, 0);
-	std::cout << "done constructiogn" << std::endl;
+//	std::cout << "done constructing" << std::endl;
 }
 
 void kd_tree::construct(std::shared_ptr<node> &current, int index) {
@@ -31,7 +32,6 @@ void kd_tree::construct(std::shared_ptr<node> &current, int index) {
 	// get thr point of the current node
 	std::vector<double> v(n);
 	for(int i = 0; i < n; ++i) v[i] = points[current->pts[i]][index];
-
 	// compute the median of the current node
 
 	double med = median(v);

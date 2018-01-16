@@ -255,7 +255,6 @@ void test2() {
 
 		auto start = std::chrono::system_clock::now();
 		pk_tree pk("data.txt", k, imax);
-
 		auto end   = std::chrono::system_clock::now();
 		std::chrono::duration<double> elapsed_time = end - start;
 		in3 << pk.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
@@ -275,8 +274,6 @@ void test2() {
 		end = std::chrono::system_clock::now();
 		elapsed_time = end - start;
 		in2 << pk.size() << ' ' << query.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
-
-
 		std::cout << "the number of equal points = " << count_equal(naive_result[0], pk_result[0], pts, query[0]) <<  '\n';
 
 	in1.close();
@@ -284,7 +281,107 @@ void test2() {
 	in3.close();
 }
 
+/*
+* construct a file name: ./sift/<i>.txt
+*
+*/
+std::string get_file_name(int i) {
+	std::ostringstream o;
+	o << "../sift/" << i << ".txt";
+	return o.str();
+}
+
+void read_write_sift_point(std::ifstream &in, std::ofstream& out) {
+	double x;
+	for(int i = 0; i < 128; ++i) {
+		in >> x; out << x << ' ';
+	}
+	out << '\n';
+}
+
+/*
+*
+*
+*/
+void creat_sift_data_file(int size) {
+	std::ifstream read;
+	std::ofstream out("sift_data.txt");
+	int file_number = 0;
+	auto file_name = get_file_name(0);
+	read.open(file_name);
+	int a, b;
+	read >> a >> b;
+	out << size <<  ' ' << b << '\n';
+	for(int i = 0; i < size; i++) {
+		read_write_sift_point(read, out);
+		if(read.eof()) {
+			read.close();
+			file_number++;
+			file_name = get_file_name(file_number);
+			read.open(file_name, std::ifstream::in);
+			if(!read.is_open()) std::cout << "bad file" << '\n';
+			read >> a >> b;
+		//	std::cout << a << ' ' << b << '\n';
+			std::cout << file_name << '\n';
+		}
+	}
+	out.close();
+	read.close();
+}
+
+pk_tree construct_pk_tree(std::string file_name, int k, int imax, std::ofstream& out) {
+	auto start = std::chrono::system_clock::now();
+	pk_tree pk(file_name, k, imax);
+	auto end   = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_time = end - start;
+	out << pk.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+	return pk;
+}
+
+kd_tree construct_kd_tree(std::string file_name, std::ofstream &out) {
+	auto start = std::chrono::system_clock::now();
+	kd_tree kd(file_name);
+	auto end   = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_time = end - start;
+	out << kd.size() << ' ' << kd.get_dimension() << ' ' << elapsed_time.count() << '\n';
+	return kd;
+}
+
+rkd_tree construct_rkd_register_time(std::string file_name, int tree, int k, std::ofstream& out) {
+	auto start = std::chrono::system_clock::now();
+	rkd_tree rk(file_name, tree, k);
+	auto end   = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_time = end - start;
+  out << rk.size() << ' ' << rk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+	return rk;
+}
+
+/**
+* test against sift features
+*
+*/
+void test_construction_sift() {
+	std::ofstream out_kd("kdct.txt", std::ios_base::app);
+	std::ofstream out_rkd("rkdct.txt", std::ios_base::app);
+	std::ofstream out_pk("pkct.txt", std::ios_base::app);
+
+	std::string file_name = "sift_data.txt";
+	int tree = 10;
+	int k    = 10;
+	unsigned int k_means = 4;
+	int imax = 30;
+	for(int i = 10; i < 10000; i += 10) {
+	//	std::cout << i << std::endl;
+		creat_sift_data_file(i);
+		//auto kd = construct_kd_tree(file_name, out_kd);
+		//auto rk = construct_rkd_register_time(file_name, tree, k, out_rkd);
+		auto pk = construct_pk_tree(file_name, k_means, imax, out_pk);
+		std::cout << pk.size() << ' ' << pk.get_dimension() << std::endl;
+	}
+}
+
 int main() {
-	test2();
+	//test2();
+	test_construction_sift();
 	return 0;
 }
