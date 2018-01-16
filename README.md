@@ -131,6 +131,7 @@ In this step, we will show comparison between the previous three algorithm.
 We will conduct our testing in three different data instances. The first one is SIFT (Scale-invariant feature transform). The second one is data sampled from Normal distribution. The last one is data sampled from Uniform distribution.
 
 **SIFT DATA**
+
 The following graphs show the construction time for the three trees (algorithm);
 the k-d tree in red, randomized k-d tree forest in blue, and the k-means Priority tree in green
-![](./imges/sift_construction_time)
+![](./imges/sift_construction_time.png)
