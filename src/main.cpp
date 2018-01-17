@@ -370,14 +370,14 @@ void test_construction_sift() {
 	int k    = 10;
 	unsigned int k_means = 4;
 	int imax = 30;
-	for(int i = 10; i < 10000; i += 10) {
+	//for(int i = 10; i < 100; i += 10) {
 	//	std::cout << i << std::endl;
-		creat_sift_data_file(i);
+		creat_sift_data_file(1000);
 		//auto kd = construct_kd_tree(file_name, out_kd);
-		//auto rk = construct_rkd_register_time(file_name, tree, k, out_rkd);
-		auto pk = construct_pk_tree(file_name, k_means, imax, out_pk);
-		std::cout << pk.size() << ' ' << pk.get_dimension() << std::endl;
-	}
+		auto rk = construct_rkd_register_time(file_name, tree, k, out_rkd);
+	//	auto pk = construct_pk_tree(file_name, k_means, imax, out_pk);
+		std::cout << rk.size() << ' ' << rk.get_dimension() << std::endl;
+	//}
 }
 
 int main() {

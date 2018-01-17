@@ -134,5 +134,5 @@ We will conduct our testing in three different data instances. The first one is 
 **SIFT DATA**
 
 The following graphs show the construction time for the three trees (algorithm);
-the k-d tree in red, randomized k-d tree forest in blue, and the k-means Priority tree in green.
+the k-d tree in red, randomized k-d tree forest(10 trees) in blue, and the k-means Priority tree(k = 4, maximum number of iteration = 30) in green.
 ![](./imges/sift_construction_time.png)

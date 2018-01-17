@@ -14,7 +14,6 @@
 #include <memory>
 #include "node.h"
 #include <cmath>
-#include <functional>
 
 int rkd_tree::ND = 5;
 std::random_device rkd_tree::rd;
@@ -34,21 +33,23 @@ rkd_tree::rkd_tree(const std::string file_name, int n, int l) {
 void rkd_tree::construct(const std::string file_name) {
 	read_point(file_name);
 	roots = std::vector<std::shared_ptr<node>>(tree_num);
+
+	std::vector<int> v(points.size());
+	std::generate(v.begin(), v.end(), [n = 0] () mutable { return n++; });
 	for(size_t i = 0; i < roots.size(); ++i) {
 
 		roots[i] = std::make_shared<node>();
-		for(size_t j = 0; j < points.size(); ++j)
-		 	(roots[i]->pts).push_back(j);
+	//	for(size_t j = 0; j < points.size(); ++j)
+	//	 	(roots[i]->pts).push_back(j);
+		roots[i]->pts = v;
 
 		if(points.size() > 0) {
 			dimension = points[0].size();
 		}
 
-		std::cout << "start constructing root " << i << '\n';
 		int index = split_dimension(roots[i]);
 		roots[i]->index = index;
 		construct(roots[i], index);
-		std::cout << "done constructiing root " << i << '\n';
 	}
 }
 
@@ -62,12 +63,10 @@ void rkd_tree::construct(std::shared_ptr<node> &current, int index) {
 	for(int i = 0; i < n; ++i) v[i] = points[current->pts[i]][index];
 
 	// compute the median of the current node
-
 	double med = median(v);
 	current->median = med;
 	current->index  = index;
-	// create a left and right child
-	//std::cout << med << "\n";// << v << std::endl;
+
 	current->left   = std::make_shared<node>();
 	current->right  = std::make_shared<node>();
 	std::shared_ptr<node> l = current->left;
@@ -75,14 +74,12 @@ void rkd_tree::construct(std::shared_ptr<node> &current, int index) {
 	l->parent = current;
 	r->parent = current;
 	for(int i = 0; i < n; i++) {
-//		std::cout << v << std::endl;
 		if(points[current->pts[i]][index] <= med) {
 			l->pts.push_back(current->pts[i]);
 		} else {
 			r->pts.push_back(current->pts[i]);
 		}
 	}
-	//change here
 	if(dimension < 5)
 		index = (index + 1) % dimension;
 	else
