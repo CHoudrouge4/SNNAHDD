@@ -102,28 +102,6 @@ This Step is implementing **The Priority Search K-Means Tree**
 1. Current Status:
 	* Constructing The Tree: **done**
 	* Querying  The tree: **done**
-2. Testing:
-	We started testing the performance of constructing the Priority Search K-Means Tree.
-	for this purpose we did multiple graphs where each changed one of the variables k (the maximum size of the cluster), Imax (maximum number of iteration to construct a cluster), and the dimension of the data.
-
-The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 2, k = 4, and Imax = 10.
-![](./imges/pk/100000_2_4_10.png)
-
-The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 10, k = 4, and Imax = 10.
-![](./imges/pk/10000_10_4_10.png)
-
-The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 10, k = 4, and Imax = 20.
-![](./imges/pk/10000_10_4_20.png)
-
-The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 10, k = 4, and Imax = 60.
-![](./imges/pk/10000_10_4_60.png)
-
-The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 10, k = 10, and Imax = 10.
-![](./imges/pk/10000_10_10_10.png)
-
-The following graph represents the change of the time (in seconds) with respect to the change of the data size(number of points) with fixed dimension equals to 10, k = 16, and Imax = 10.
-![](./imges/pk/10000_10_16_10.png)
-
 
 ## Step Three
 General Testing
@@ -136,3 +114,15 @@ We will conduct our testing in three different data instances. The first one is 
 The following graphs show the construction time for the three trees (algorithm);
 the k-d tree in red, randomized k-d tree forest(10 trees) in blue, and the k-means Priority tree(k = 4, maximum number of iterations = 30) in green.
 ![](./imges/sift_construction_time.png)
+
+In addition to the construction time, we measured the search performance of the algorithms (Kd-Tree, Randomized Kd-Trees, Priority K-means Tree).
+
+The Randomized Kd-Trees (in blue) have the best performance in term of accuracy and speed, then it comes the Priority K-means Tree (in green). However, the Kd-Tree (in red) and Linear search (in yellow) have similar performance.
+![](./imges/sift_search.png)
+
+For the Randomized Kd-Trees and Priority K-means Tree, we counted the correct solution to a factor of epsilon.
+i.e d(p, q) <= (1 + epsilon) d(p_k, q)
+where q is the query point, d is the distance function, and p_k is the kth furthest point for the query point.
+Therefore, p is a correct solution if it satisfies the above inequality.
+
+For epsilon increases from 0.3 to 0.7 the precision from 87% to 99% for the Randomized K-tree, and it increases from 70 to 80% for the Priority K-means Tree.   
