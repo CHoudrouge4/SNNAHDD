@@ -122,7 +122,7 @@ The Randomized Kd-Trees (in blue) have the best performance in term of accuracy 
 
 For the Randomized Kd-trees and The Priority K-means Tree, we counted the correct solution to a factor of epsilon.
 
-i.e d(p, q) <= (1 + epsilon) d(p_k, q)
+i.e d(p, q) <= (1 + epsilon) d(P_k, q)
 where q is the query point, d is the distance function.
 For the Priority k-means tree testing, P_k is the kth furthest point from the true correct answer.
 For the Randomized kd-trees testing, P_k is the correct answer returned by linear search.
