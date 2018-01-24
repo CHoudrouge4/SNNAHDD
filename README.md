@@ -120,9 +120,12 @@ In addition to the construction time, we measured the search performance of the 
 The Randomized Kd-Trees (in blue) have the best performance in term of accuracy and speed, then it comes the Priority K-means Tree (in green). However, the Kd-Tree (in red) and Linear search (in yellow) have similar performance.
 ![](./imges/sift_search.png)
 
-For the Randomized Kd-Trees and Priority K-means Tree, we counted the correct solution to a factor of epsilon.
+For the Randomized Kd-trees and The Priority K-means Tree, we counted the correct solution to a factor of epsilon.
 i.e d(p, q) <= (1 + epsilon) d(p_k, q)
-where q is the query point, d is the distance function, and p_k is the kth furthest point for the query point.
+where q is the query point, d is the distance function.
+For the Priority k-means testing P_k is the kth furthest point from the true correct answer.
+For the Randomized kd-trees, P_k is the correct answer returned by linear search.
 Therefore, p is a correct solution if it satisfies the above inequality.
 
-For epsilon increases from 0.3 to 0.7 the precision from 87% to 99% for the Randomized K-tree, and it increases from 70 to 80% for the Priority K-means Tree.   
+By increases epsilon from 0.3 to 0.7, the precision increases from 87% to 99% for the Randomized K-tree, and it increases from 70 to 80% for the Priority K-means Tree.
+In addition, increasing the k parameter for the Priority k-means tree from 4 to 16 with epsilon fixed to 0.7 increases the precision from 80 % to 99%.   

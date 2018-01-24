@@ -380,14 +380,14 @@ void test_sift_pk() {
 	//std::ofstream out_kd("kdct.txt", std::ios_base::app);
 	//std::ofstream out_rkd("rkdct.txt", std::ios_base::app);
 	std::ofstream out_pk("pkct.txt", std::ios_base::app);
-	//std::ofstream in1("pk_result_sift.txt" , std::ios_base::app);
-	//std::ofstream in2("pk_naive_sift.txt"	  , std::ios_base::app);
+	std::ofstream in1("pk_result_sift.txt" , std::ios_base::app);
+	std::ofstream in2("pk_naive_sift.txt"	  , std::ios_base::app);
 	//std::ofstream in3("pk_const_time.txt", std::ios_base::app);
 
 	std::string file_name = "sift_data.txt";
 	//int tree = 10;
 	//int k    = 10;
-	unsigned int k_means = 4;
+	unsigned int k_means = 16;
 	int imax = 30;
 	double total_accur = 0.0;
 	int number_of_test = 0;
@@ -405,8 +405,8 @@ void test_sift_pk() {
 		auto pk_result = pk.search(query, l);
 		auto end = std::chrono::system_clock::now();
 		std::chrono::duration<double> elapsed_time = end - start;
-		//in1 << pk.size() << ' ' << query.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
-		std::cout << "done pk - tree" << '\n';
+		in1 << pk.size() << ' ' << query.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+		std::cout << "done pk - tree" << elapsed_time.count() << '\n';
 
 		auto pts = pk.get_points();
 
@@ -414,8 +414,8 @@ void test_sift_pk() {
 		auto naive_result = knaive(pts, query, k_means);
 		end = std::chrono::system_clock::now();
 		elapsed_time = end - start;
-		//in2 << pk.size() << ' ' << query.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
-		std::cout << "done naive" << std::endl;
+		in2 << pk.size() << ' ' << query.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+		std::cout << "done naive" << elapsed_time.count() <<std::endl;
 
 		double accurecy = 0.0;
 		for(size_t i = 0; i < query.size(); ++i)
@@ -503,7 +503,7 @@ void test_sift_kd() {
 
 int main() {
 	//test2();
-	//test_sift_rk();
-	test_sift_kd();
+	test_sift_pk();
+	//test_sift_kd();
 	return 0;
 }
