@@ -13,7 +13,7 @@
 #include <algorithm>
 
 #define RANGE 20
-const double epsilon = 0.7;
+const double epsilon = 0.5;
 
 static std::random_device rd;
 static std::mt19937 gen(rd());
@@ -85,9 +85,9 @@ std::vector<int> naive(const std::vector<point> &pts, std::vector<point> &query)
 	return res;
 }
 
-std::vector<std::vector<int>> knaive(const std::vector<point> &pts, std::vector<point> &query, int k) {
+std::vector<std::vector<int>> knaive(const std::vector<point> &pts, const std::vector<point> &query, int k) {
 	std::vector<std::vector<int>> res;
-	for(auto q: query) {
+	for(auto&& q: query) {
 		std::vector<std::pair<double, int>> tmp(pts.size());
 		for(size_t i = 0; i < pts.size(); ++i) {
 			double distance = dist(pts[i], q);
@@ -97,7 +97,7 @@ std::vector<std::vector<int>> knaive(const std::vector<point> &pts, std::vector<
 		int i = 0;
 		std::vector<int> result(k);
 		for(auto&& e: tmp) {
-			if(i > k) break;
+			if(i >= k) break;
 			result[i++] = e.second;
 		}
 		res.push_back(result);
@@ -380,48 +380,48 @@ void test_sift_pk() {
 	//std::ofstream out_kd("kdct.txt", std::ios_base::app);
 	//std::ofstream out_rkd("rkdct.txt", std::ios_base::app);
 	std::ofstream out_pk("pkct.txt", std::ios_base::app);
-	std::ofstream in1("pk_result_sift.txt" , std::ios_base::app);
-	std::ofstream in2("pk_naive_sift.txt"	  , std::ios_base::app);
+	std::ofstream in1("pk_result_sift_imax_performance.txt");
+	std::ofstream in2("pk_sift_imax_precision.txt");
 	//std::ofstream in3("pk_const_time.txt", std::ios_base::app);
 
 	std::string file_name = "sift_data.txt";
-	//int tree = 10;
-	//int k    = 10;
-	unsigned int k_means = 16;
-	int imax = 30;
+	unsigned int k_means = 35;
+	//int imax = 30;
 	double total_accur = 0.0;
 	int number_of_test = 0;
-	for(int i = 100; i < 10000; i += 100) {
+	auto query = creat_sift_query(10, 50);
+	creat_sift_data_file(10000);
+	for(int imax = 1; imax <= 100; imax += 1) {
 	//int i = 1000;
 		number_of_test += 1;
-		auto query = creat_sift_query(100, 50);
-
-		creat_sift_data_file(i);
-
 		auto pk = construct_pk_tree(file_name, k_means, imax, out_pk);
 
-		int l = 0.2 * i;
+		int l = 10;
 		auto start = std::chrono::system_clock::now();
 		auto pk_result = pk.search(query, l);
 		auto end = std::chrono::system_clock::now();
-		std::chrono::duration<double> elapsed_time = end - start;
-		in1 << pk.size() << ' ' << query.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
-		std::cout << "done pk - tree" << elapsed_time.count() << '\n';
+		std::chrono::duration<double> elapsed_time1 = end - start;
+		//in1 << pk.size() << ' ' << query.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+		//std::cout << "done pk - tree" << elapsed_time.count() << '\n';
+ 		in1  << imax << ' ' << elapsed_time1.count() << '\n';
 
 		auto pts = pk.get_points();
 
 		start = std::chrono::system_clock::now();
 		auto naive_result = knaive(pts, query, k_means);
 		end = std::chrono::system_clock::now();
-		elapsed_time = end - start;
-		in2 << pk.size() << ' ' << query.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
-		std::cout << "done naive" << elapsed_time.count() <<std::endl;
+		std::chrono::duration<double> elapsed_time2 = end - start;
+
+		//in2 << pk.size() << ' ' << query.size() << ' ' << pk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+
+		//std::cout << "done naive" << elapsed_time.count() <<std::endl;
 
 		double accurecy = 0.0;
 		for(size_t i = 0; i < query.size(); ++i)
-	 	accurecy += 100 * count_equal(naive_result[i], pk_result[i], pts, query[i]) / ((double) k_means);
+	 		accurecy += 100 * count_equal(naive_result[i], pk_result[i], pts, query[i]) / ((double) k_means);
 		std::cout << "accurecy = " << accurecy / query.size() << '\n';
 		total_accur += accurecy;
+		in2 << imax << ' ' << accurecy / 10 << '\n';
 	}
 
 	std::cout << total_accur << "/ " << number_of_test << '\n';
@@ -430,37 +430,40 @@ void test_sift_pk() {
 }
 
 void test_sift_rk() {
-	std::ofstream out_rkd("rkdct.txt", std::ios_base::app);
-	std::ofstream in1("rkd_result_sift.txt" , std::ios_base::app);
-	std::ofstream in2("rkd_naive_sift.txt"	  , std::ios_base::app);
+	std::ofstream out_rkd("rkdct.txt");
+	std::ofstream in1("rkd_result_visited_leeafs.txt");
+	std::ofstream in2("rkd_tree_precision_visited_leafs.txt");
 
 	std::string file_name = "sift_data.txt";
 	int tree = 20;
-	int k    = 10;
+	//int k    = 10; // number of visited leafs
 	double total_accur = 0.0;
 	int number_of_test = 0;
-	for(int i = 100; i < 10000; i += 100) {
-//	int i = 1000;
-		number_of_test += 1;
-		auto query = creat_sift_query(100, 50);
 
-		creat_sift_data_file(i);
+	auto query = creat_sift_query(10, 50);
+	creat_sift_data_file(1000);
+
+	for(int k = 1; k < 100; k += 1) {
+		number_of_test += 1;
 		auto rk = construct_rkd_tree(file_name, tree, k, out_rkd);
 
+		// testing and mesuring the rk - tree query time
 		auto start = std::chrono::system_clock::now();
 		auto rk_result = rk.search(query);
 		auto end = std::chrono::system_clock::now();
 		std::chrono::duration<double> elapsed_time = end - start;
-		in1 << rk.size() << ' ' << query.size() << ' ' << rk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+		//in1 << rk.size() << ' ' << query.size() << ' ' << rk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+		in1 << k << ' ' << elapsed_time.count() << '\n';
 		std::cout << "done rk - tree " << elapsed_time.count() << '\n';
 
 		auto pts = rk.get_points();
 
+		// testing the naive section
 		start = std::chrono::system_clock::now();
 		auto naive_result = naive(pts, query);
 		end = std::chrono::system_clock::now();
 		elapsed_time = end - start;
-		in2 << rk.size() << ' ' << query.size() << ' ' << rk.get_dimension() << ' ' << elapsed_time.count() << '\n';
+	//	in2 << rk.size() << ' ' << query.size() << ' ' << rk.get_dimension() << ' ' << elapsed_time.count() << '\n';
 		std::cout << "done naive " << elapsed_time.count() << '\n';
 
 		int count = 0;
@@ -471,14 +474,13 @@ void test_sift_rk() {
 		}
 		double accurecy = ((double) count * 100) / query.size();
 		std::cout << "accurecy = " << accurecy << '\n';
+		in2 << k << ' ' << accurecy << '\n';
 		total_accur += accurecy;
 	}
 
 	std::cout << total_accur << "/ " << number_of_test << '\n';
 	std::cout << "total accurecy is = " << total_accur / number_of_test << '\n';
-
 }
-
 
 void test_sift_kd() {
 	std::ofstream out_kd("kdct.txt", std::ios_base::app);
@@ -491,7 +493,6 @@ void test_sift_kd() {
 
 		creat_sift_data_file(i);
 		auto kd = construct_kd_tree(file_name, out_kd);
-
 		auto start     = std::chrono::system_clock::now();
 		auto kd_result = kd.search(query);
 		auto end       = std::chrono::system_clock::now();

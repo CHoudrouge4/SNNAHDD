@@ -129,4 +129,34 @@ For the Randomized kd-trees testing, P_k is the correct answer returned by linea
 Therefore, p is a correct solution if it satisfies the above inequality.
 
 By increases epsilon from 0.3 to 0.7, the precision increases from 87% to 99% for the Randomized K-tree, and it increases from 70 to 80% for the Priority K-means Tree.
-In addition, increasing the k parameter for the Priority k-means tree from 4 to 16 with epsilon fixed to 0.7 increases the precision from 80 % to 99%.   
+In addition, increasing the k parameter for the Priority k-means tree from 4 to 16 with epsilon fixed to 0.7 increases the precision from 80 % to 99%.
+
+After, we measured the effect of changing the parameters for the Randomized k-d Trees and for the Priority K-means Tree.
+### Randomized kd-trees
+First, we fixed all the parameters. then, we tested how the number of trees in the k-d tree forest affect the performance (measured in time).  
+The following graph illustrates the results.
+![](./imges/param/kmeans_precision_performance_E05.png)
+
+From the graph, we can notice that the performance decreases quickly to reach certain value where increasing the number of trees becomes ineffective.
+However, the number of trees does not show a significant influence on the precision of the result.
+
+In addition, we tested the effect of the number of visited leafs on the performance and on the precision of the search results.
+we did this experiment for epsilon equals to 0.3 and 0.7.
+The following graph illustrates the result where the precision is measured in percentage (colored in red)
+and the performance is measured in seconds (colored in yellow).
+
+For epsilon = 0.3
+![](./imges/param/epsilon03.png)
+
+For epsilon = 0.7
+![](./imges/param/EP07.png)
+
+### Priority k-means tree
+For the Priority k-means tree, we tested the affect of changing the value of k and the maximum number of iterations.
+For the value of k, we measured the impact on the performance(in seconds, colored in red) and on the precision (in percentage, colored in yellow).
+The following graph illustrates the result.
+![](./imges/param/kmeans_performance_precision.png)
+we noticed that the performance decreases slowly as k increases. However, the precision does not have a regular pattern, but for a certain K it takes a maximal value and remains constant.
+
+Concerning the number of iterations, we noticed that this parameters does not have a significant impact on the performance and the precision.
+![](./imges/param/imax.png)
