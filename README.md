@@ -133,7 +133,7 @@ In addition, increasing the k parameter for the Priority k-means tree from 4 to 
 
 After, we measured the effect of changing the parameters for the Randomized k-d Trees and for the Priority K-means Tree.
 ### Randomized kd-trees
-First, we fixed all the parameters. then, we tested how the number of trees in the k-d tree forest affect the performance (measured in time).  
+First, we fixed all the parameters. then, we tested how the number of trees in the k-d tree forest affect the performance (measured in seconds).  
 The following graph illustrates the results.
 ![](./imges/param/performance_number_of_trees.png)
 
@@ -142,8 +142,8 @@ However, the number of trees does not show a significant influence on the precis
 
 In addition, we tested the effect of the number of visited leafs on the performance and on the precision of the search results.
 we did this experiment for epsilon equals to 0.3 and 0.7.
-The following graph illustrates the result where the precision is measured in percentage (colored in red)
-and the performance is measured in seconds (colored in yellow).
+The following graph illustrates the result where the precision is measured in percentage (The red plot)
+and the performance is measured in seconds (The yellow plot).
 
 For epsilon = 0.3
 ![](./imges/param/epsilon03.png)
@@ -156,6 +156,7 @@ For the Priority k-means tree, we tested the affect of changing the value of k a
 For the value of k, we measured the impact on the performance(in seconds, colored in red) and on the precision (in percentage, colored in yellow).
 The following graph illustrates the result.
 ![](./imges/param/kmeans_performance_precision.png)
+
 we noticed that the performance decreases slowly as k increases. However, the precision does not have a regular pattern, but for a certain K it takes a maximal value and remains constant.
 
 Concerning the number of iterations, we noticed that this parameters does not have a significant impact on the performance and the precision.
