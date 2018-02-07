@@ -157,7 +157,7 @@ For the value of k, we measured the impact on the performance(in seconds, colore
 The following graph illustrates the result.
 ![](./imges/param/kmeans_performance_precision.png)
 
-we noticed that the performance decreases slowly as k increases. However, the precision does not have a regular pattern, but for a certain K it takes a maximal value and remains constant.
+We noticed that the performance decreases slowly as k increases. However, the precision does not have a regular pattern, but for a certain K it takes a maximal value and remains constant.
 
 Concerning the number of iterations, we noticed that this parameters does not have a significant impact on the performance and the precision.
 ![](./imges/param/imax.png)
