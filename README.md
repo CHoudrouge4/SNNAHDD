@@ -135,7 +135,7 @@ After, we measured the effect of changing the parameters for the Randomized k-d 
 ### Randomized kd-trees
 First, we fixed all the parameters. then, we tested how the number of trees in the k-d tree forest affect the performance (measured in time).  
 The following graph illustrates the results.
-![](./imges/param/kmeans_precision_performance_E05.png)
+![](./imges/param/performance_number_of_trees.png)
 
 From the graph, we can notice that the performance decreases quickly to reach certain value where increasing the number of trees becomes ineffective.
 However, the number of trees does not show a significant influence on the precision of the result.
