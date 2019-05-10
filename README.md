@@ -7,4 +7,4 @@ A detailed description of these Data Structures is presented in [This paper](htt
 
 The result of this project is documented in the following [document.](https://choudrouge4.github.io/pdfs/snnahdd.pdf)
 
-NOTICE: That the purpose of this project is educational. The corresponded library for the above-mentioned paper can be found [here.](https://github.com/mariusmuja/flann)
+NOTICE: The purpose of this project is educational. The corresponded library for the above-mentioned paper can be found [here.](https://github.com/mariusmuja/flann)
